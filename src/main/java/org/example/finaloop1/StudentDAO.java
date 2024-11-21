@@ -3,8 +3,11 @@ package org.example.finaloop1;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class StudentDAO implements DAOInterface<Student> {
+public abstract class StudentDAO implements DAOInterface<Student> {
+    private static final Logger logger = Logger.getLogger(StudentDAO.class.getName());
 
     @Override
     public int insert(Student student) {
@@ -17,17 +20,39 @@ public class StudentDAO implements DAOInterface<Student> {
             pstmt.setString(3, student.getPhone());
             pstmt.executeUpdate();
 
-            ResultSet keys = pstmt.getGeneratedKeys();
-            if (keys.next()) {
-                return keys.getInt(1); // Return generated ID
+            try (ResultSet keys = pstmt.getGeneratedKeys()) {
+                if (keys != null && keys.next()) {
+                    return keys.getInt(1); // Return generated ID
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error inserting student: " + student, e);
         }
         return -1;
     }
 
+    @Override
+    public Student read(int id) {
+        String query = "SELECT * FROM Students WHERE student_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Student(
+                            rs.getInt("student_id"),
+                            rs.getString("student_name"),
+                            rs.getString("email"),
+                            rs.getString("phone")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error reading student with ID: " + id, e);
+        }
+        return null;
+    }
 
     @Override
     public void update(Student student) {
@@ -41,20 +66,20 @@ public class StudentDAO implements DAOInterface<Student> {
             pstmt.setInt(4, student.getStudentId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error updating student: " + student, e);
         }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int student) {
         String query = "DELETE FROM Students WHERE student_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            pstmt.setInt(1, id);
+            pstmt.setInt(1, student);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error deleting student: " + student, e);
         }
     }
 
@@ -75,9 +100,8 @@ public class StudentDAO implements DAOInterface<Student> {
                 ));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error fetching all students", e);
         }
         return students;
     }
 }
-

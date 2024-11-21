@@ -13,6 +13,12 @@ public class Student {
         this.phone = phone;
     }
 
+    public Student(String studentName, String email, String phone) {
+        this.studentName = studentName;
+        this.email = email;
+        this.phone = phone;
+    }
+
     public int getStudentId() { return studentId; }
     public void setStudentId(int studentId) { this.studentId = studentId; }
 

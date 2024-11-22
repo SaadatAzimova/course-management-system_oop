@@ -31,10 +31,10 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <GridPane alignment="CENTER" layoutX="111.0" layoutY="119.0" prefHeight="208.0" prefWidth="368.0">
+                        <GridPane alignment="CENTER" layoutX="140.0" layoutY="121.0" prefHeight="208.0" prefWidth="368.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.0" minWidth="10.0" prefWidth="190.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="178.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0" prefWidth="182.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="186.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -98,17 +98,17 @@
                         <Label layoutX="17.0" layoutY="167.0" prefHeight="18.0" prefWidth="106.0" text="Instructor's email:" />
                         <Label layoutX="17.0" layoutY="261.0" text="Instructor's phone:" />
                         <Button layoutX="17.0" layoutY="29.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
-                        <TableView layoutX="292.0" layoutY="16.0" prefHeight="200.0" prefWidth="314.0">
+                        <TableView fx:id="instructorTable" layoutX="255.0" layoutY="16.0" onSort="#initializeInstructor" prefHeight="200.0" prefWidth="314.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="Id" />
-                            <TableColumn prefWidth="75.0" text="Name" />
-                              <TableColumn prefWidth="75.0" text="Email" />
-                              <TableColumn prefWidth="75.0" text="Phone" />
+                            <TableColumn fx:id="instructorIdColumn" editable="false" prefWidth="75.0" text="Id" />
+                            <TableColumn fx:id="instructorNameColumn" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="instructorEmailColumn" prefWidth="75.0" text="Email" />
+                              <TableColumn fx:id="instructorPhoneColumn" prefWidth="75.0" text="Phone" />
                           </columns>
                         </TableView>
-                        <Button fx:id="instructorAdd" layoutX="282.0" layoutY="307.0" mnemonicParsing="false" text="Add" />
-                        <Button fx:id="instructorUupdate" layoutX="383.0" layoutY="307.0" mnemonicParsing="false" text="Update" />
-                        <Button fx:id="instructorRemove" layoutX="522.0" layoutY="307.0" mnemonicParsing="false" text="Remove" />
+                        <Button fx:id="instructorAdd" layoutX="282.0" layoutY="307.0" mnemonicParsing="false" onAction="#addInstructor" text="Add" />
+                        <Button fx:id="instructorUpdate" layoutX="383.0" layoutY="307.0" mnemonicParsing="false" onAction="#updateInstructor" text="Update" />
+                        <Button fx:id="instructorRemove" layoutX="522.0" layoutY="307.0" mnemonicParsing="false" onAction="#removeInstructor" text="Remove" />
                         <Label layoutX="391.0" layoutY="253.0" />
                         <Label fx:id="instructorActionMessage" layoutX="310.0" layoutY="263.0" prefHeight="18.0" prefWidth="289.0" text="Label" />
                      </children></AnchorPane>

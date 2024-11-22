@@ -6,17 +6,17 @@ public class Instructor {
     private String instructorEmail;
     private String InstructorPhone;
 
-    public Instructor(int instructorId, String instructorName, String instructorEmail, String instructirPhone) {
+    public Instructor(int instructorId, String instructorName, String instructorEmail, String instructorPhone) {
         this.instructorId = instructorId;
         this.instructorName = instructorName;
         this.instructorEmail = instructorEmail;
-        InstructorPhone = instructirPhone;
+        InstructorPhone = instructorPhone;
     }
 
-    public Instructor(String instructorName, String instructorEmail, String instructirPhone) {
+    public Instructor(String instructorName, String instructorEmail, String instructorPhone) {
         this.instructorName = instructorName;
         this.instructorEmail = instructorEmail;
-        InstructorPhone = instructirPhone;
+        InstructorPhone = instructorPhone;
     }
 
     public int getInstructorId() {

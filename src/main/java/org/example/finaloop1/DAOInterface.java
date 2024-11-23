@@ -9,7 +9,7 @@ public interface DAOInterface<T> {
 
         public T read(int id);
 
-        public void update(T entity);
+        public boolean update(T entity);
 
         public void delete(T entity);
 

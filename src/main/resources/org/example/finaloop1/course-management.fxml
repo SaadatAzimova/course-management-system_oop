@@ -78,6 +78,7 @@
                         <Button fx:id="studentUpdate" layoutX="401.0" layoutY="315.0" mnemonicParsing="false" onAction="#updateStudent" text="Update" />
                         <Button fx:id="goMainTab" layoutX="9.0" layoutY="-1.0" mnemonicParsing="false" text="Back" />
                         <TextField fx:id="studentName" layoutX="87.0" layoutY="62.0" />
+                        <Label fx:id="studentActionMessage" layoutX="285.0" layoutY="258.0" prefHeight="18.0" prefWidth="301.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -98,7 +99,7 @@
                         <Label layoutX="17.0" layoutY="167.0" prefHeight="18.0" prefWidth="106.0" text="Instructor's email:" />
                         <Label layoutX="17.0" layoutY="261.0" text="Instructor's phone:" />
                         <Button layoutX="17.0" layoutY="29.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
-                        <TableView fx:id="instructorTable" layoutX="255.0" layoutY="16.0" onSort="#initializeInstructor" prefHeight="200.0" prefWidth="314.0">
+                        <TableView fx:id="instructorTable" layoutX="255.0" layoutY="16.0" onSort="#initialize" prefHeight="200.0" prefWidth="314.0">
                           <columns>
                             <TableColumn fx:id="instructorIdColumn" editable="false" prefWidth="75.0" text="Id" />
                             <TableColumn fx:id="instructorNameColumn" prefWidth="75.0" text="Name" />
@@ -110,7 +111,7 @@
                         <Button fx:id="instructorUpdate" layoutX="383.0" layoutY="307.0" mnemonicParsing="false" onAction="#updateInstructor" text="Update" />
                         <Button fx:id="instructorRemove" layoutX="522.0" layoutY="307.0" mnemonicParsing="false" onAction="#removeInstructor" text="Remove" />
                         <Label layoutX="391.0" layoutY="253.0" />
-                        <Label fx:id="instructorActionMessage" layoutX="310.0" layoutY="263.0" prefHeight="18.0" prefWidth="289.0" text="Label" />
+                        <Label fx:id="instructorActionMessage" layoutX="310.0" layoutY="263.0" prefHeight="18.0" prefWidth="289.0" />
                      </children></AnchorPane>
               </content>
             </Tab>

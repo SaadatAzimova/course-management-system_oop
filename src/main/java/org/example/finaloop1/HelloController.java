@@ -1,5 +1,4 @@
 package org.example.finaloop1;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -43,8 +42,21 @@ public class HelloController {
     @FXML private TextField instructorName;
     @FXML private TextField instructorPhone;
     @FXML private Button instructorRemove;
-    @FXML private Button instructorUupdate;
+    @FXML private Button instructorUpdate;
     @FXML private TableView<Instructor> instructorTable;
+
+    @FXML private Label courseActionMessage;
+    @FXML private Button courseAdd;
+    @FXML private TextField courseDescription;
+    @FXML private TableColumn<?, ?> courseDescriptionColumn;
+    @FXML private TableColumn<?, ?> courseIdColumn;
+    @FXML private TableView<?> courseInitialize;
+    @FXML private TableColumn<?, ?> courseInstructorColumn;
+    @FXML private Button courseRemove;
+    @FXML private TextField courseTitle;
+    @FXML private TableColumn<?, ?> courseTitleColumn;
+    @FXML private Button courseUpdate;
+
 
     @FXML private void navigateToCourseTab() {
         courseTab.getTabPane().getSelectionModel().select(courseTab);
@@ -104,12 +116,11 @@ public class HelloController {
         instructorPhoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
-    private void loadInstructors() {
-        instructorList.clear();
-        instructorList.addAll(instructorDAO.findAll());
-        instructorTable.setItems(instructorList);
-        instructorTable.refresh();
+    private void loadStudents() {
+        studentList.setAll(studentDAO.findAll());
+        studentTableView.setItems(studentList);
     }
+
     @FXML
     private void addStudent() {
         String name = studentName.getText().trim();
@@ -117,7 +128,7 @@ public class HelloController {
         String phone = studentPhone.getText().trim();
 
         if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled out!");
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled!");
             return;
         }
 
@@ -128,11 +139,12 @@ public class HelloController {
 
         Student student = new Student(0, name, email, phone);
         int id = studentDAO.insert(student);
+
         if (id > 0) {
             student.setStudentId(id);
             studentList.add(student);
             clearStudentFields();
-            studentActionMessage.setText("Student added successfully: " + name);
+            studentActionMessage.setText("Student added successfully.");
         } else {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add student!");
         }
@@ -145,55 +157,11 @@ public class HelloController {
             showAlert(Alert.AlertType.ERROR, "Selection Error", "No student selected for update!");
             return;
         }
-
-        // Get the new values from input fields
-        String updatedName = studentName.getText().trim();
-        String updatedEmail = studentEmail.getText().trim();
-        String updatedPhone = studentPhone.getText().trim();
-
-        // Only check fields that have been filled in
-        // If a field is empty, keep the original value
-        if (updatedName.isEmpty()) {
-            updatedName = selectedStudent.getStudentName();
-        }
-        if (updatedEmail.isEmpty()) {
-            updatedEmail = selectedStudent.getEmail();
-        }
-        if (updatedPhone.isEmpty()) {
-            updatedPhone = selectedStudent.getPhone();
-        }
-
-        // Validate email if it's different from the original
-        if (!updatedEmail.equals(selectedStudent.getEmail()) && !isValidEmail(updatedEmail)) {
-            showAlert(Alert.AlertType.ERROR, "Validation Error", "Invalid email format!");
-            return;
-        }
-
-        // Check if any values are actually different
-        boolean hasChanges = !updatedName.equals(selectedStudent.getStudentName()) ||
-                !updatedEmail.equals(selectedStudent.getEmail()) ||
-                !updatedPhone.equals(selectedStudent.getPhone());
-
-        if (!hasChanges) {
-            studentActionMessage.setText("No changes made to update.");
-            return;
-        }
-
-        // Update the student object with new values
-        selectedStudent.setStudentName(updatedName);
-        selectedStudent.setEmail(updatedEmail);
-        selectedStudent.setPhone(updatedPhone);
-
-        // Update the database
-        boolean success = studentDAO.update(selectedStudent);
-        if (success) {
-            studentTableView.refresh();
-            clearStudentFields();
-            studentActionMessage.setText("Student updated successfully: " + selectedStudent.getStudentName());
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update student!");
-        }
+        // Update logic
+        studentDAO.update(selectedStudent);
+        studentTableView.refresh();
     }
+
     @FXML
     private void removeStudent() {
         Student selectedStudent = studentTableView.getSelectionModel().getSelectedItem();
@@ -204,14 +172,6 @@ public class HelloController {
 
         studentDAO.delete(selectedStudent.getStudentId());
         studentList.remove(selectedStudent);
-        studentActionMessage.setText("Student removed successfully: " + selectedStudent.getStudentName());
-    }
-
-
-    private void loadStudents() {
-        studentList.clear();
-        studentList.addAll(studentDAO.findAll());
-        studentTableView.setItems(studentList);
     }
 
     private void clearStudentFields() {
@@ -219,17 +179,14 @@ public class HelloController {
         studentEmail.clear();
         studentPhone.clear();
     }
-
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        return email.matches(emailRegex);
-    }
-
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private boolean isValidEmail(String email) {
+        return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
 // Instructor Section
 
@@ -240,36 +197,28 @@ public class HelloController {
 
         }
     };
-
-
-
-
     @FXML
     public void addInstructor() {
         String name = instructorName.getText().trim();
         String email = instructorEmail.getText().trim();
         String phone = instructorPhone.getText().trim();
-
         // Check if any field is empty
         if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled out!");
             return;
         }
-
         // Validate email format
         if (!isValidEmail(email)) {
             showAlert(Alert.AlertType.ERROR, "Validation Error", "Invalid email format!");
             return;
         }
-
         // Create a new Instructor object
-        Instructor instructor = new Instructor(0, name, email, phone);
-        int id = instructorDAO.insert(instructor);
-
+        Instructor newInstructor = new Instructor(0, name, email, phone);
+        int id = instructorDAO.insert(newInstructor);
         // Check if insertion was successful
         if (id > 0) {
-            instructor.setInstructorId(id);
-            instructorList.add(instructor);
+            newInstructor.setInstructorId(id);
+            instructorList.add(newInstructor);
             loadInstructors(); // Refresh table with updated database content
             clearInstructorFields(); // Clear the fields after successful addition
             showAlert(Alert.AlertType.INFORMATION, "Success", "Instructor added successfully!");
@@ -277,71 +226,25 @@ public class HelloController {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add instructor!");
         }
     }
+
     @FXML
-    public void updateInstructor() {
+    private void updateInstructor() {
         Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
         if (selectedInstructor == null) {
-            instructorActionMessage.setText("No instructor selected to update.");
+            showAlert(Alert.AlertType.ERROR, "Selection Error", "No instructor selected for update!");
             return;
         }
 
-        // Get the new values, if empty, keep the existing values
-        String updatedName = instructorName.getText().trim();
-        String updatedEmail = instructorEmail.getText().trim();
-        String updatedPhone = instructorPhone.getText().trim();
-
-        // Store original values
-        String originalName = selectedInstructor.getInstructorName();
-        String originalEmail = selectedInstructor.getInstructorEmail();
-        String originalPhone = selectedInstructor.getInstructorPhone();
-
-        // Only update fields that have been changed
-        boolean hasChanges = false;
-
-        if (!updatedName.isEmpty() && !updatedName.equals(originalName)) {
-            selectedInstructor.setInstructorName(updatedName);
-            hasChanges = true;
-        }
-        if (!updatedEmail.isEmpty() && !updatedEmail.equals(originalEmail)) {
-            if (!isValidEmail(updatedEmail)) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "Invalid email format!");
-                return;
-            }
-            selectedInstructor.setInstructorEmail(updatedEmail);
-            hasChanges = true;
-        }
-        if (!updatedPhone.isEmpty() && !updatedPhone.equals(originalPhone)) {
-            selectedInstructor.setInstructorPhone(updatedPhone);
-            hasChanges = true;
-        }
-
-        if (!hasChanges) {
-            instructorActionMessage.setText("No changes made to update.");
-            return;
-        }
-
-        // Update in database and handle any exceptions
-        try {
-            instructorDAO.update(selectedInstructor); // No need for success check as DAO method doesn't return anything
-            instructorTable.refresh(); // Refresh the table to reflect updated data
-            clearInstructorFields(); // Clear the input fields
-            instructorActionMessage.setText("Updated instructor: " + selectedInstructor.getInstructorName());
-        } catch (Exception e) {
-            // Revert changes if database update failed
-            selectedInstructor.setInstructorName(originalName);
-            selectedInstructor.setInstructorEmail(originalEmail);
-            selectedInstructor.setInstructorPhone(originalPhone);
+        // Assuming updates are already made directly in the table (editable cells)
+        boolean success = instructorDAO.update(selectedInstructor);
+        if (success) {
             instructorTable.refresh();
+            showAlert(Alert.AlertType.INFORMATION, "Update Successful", "Instructor details updated!");
+        } else {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update instructor!");
         }
     }
 
-
-    private void clearInstructorFields() {
-        instructorName.clear();
-        instructorEmail.clear();
-        instructorPhone.clear();
-    }
 
 
     @FXML public void removeInstructor() {
@@ -356,8 +259,16 @@ public class HelloController {
         instructorActionMessage.setText(selectedInstructor.getInstructorName() + " deleted.");
     }
 
+    private void clearInstructorFields() {
+        instructorName.clear();
+        instructorEmail.clear();
+        instructorPhone.clear();
+    }
 
-
-
+    private void loadInstructors() {
+        instructorList.clear();
+        instructorList.addAll(instructorDAO.findAll());
+        instructorTable.setItems(instructorList);
+    }
 
 }

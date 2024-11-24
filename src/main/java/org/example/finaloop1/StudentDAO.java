@@ -55,7 +55,7 @@ public abstract class StudentDAO implements DAOInterface<Student> {
     }
 
     @Override
-    public boolean update(Student student) {
+    public void update(Student student) {
         String query = "UPDATE Students SET student_name = ?, email = ?, phone = ? WHERE student_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -65,12 +65,10 @@ public abstract class StudentDAO implements DAOInterface<Student> {
             pstmt.setString(3, student.getPhone());
             pstmt.setInt(4, student.getStudentId());
 
-            // Execute update and check how many rows were affected
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0; // Return true if at least one row was updated
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             logger.log(Level.SEVERE, "Error updating student: " + student, e);
-            return false; // Return false if an exception occurs
+            return ;
         }
     }
 

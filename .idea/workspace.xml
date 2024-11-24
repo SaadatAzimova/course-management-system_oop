@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ade17570-1e71-4d69-b048-31ef1267468f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/DAOInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/DAOInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/InstructorDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/InstructorDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/StudentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/StudentDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +80,7 @@
       <workItem from="1732197994548" duration="8289000" />
       <workItem from="1732282628858" duration="11543000" />
       <workItem from="1732342137584" duration="23967000" />
-      <workItem from="1732430097958" duration="4069000" />
+      <workItem from="1732430097958" duration="5637000" />
     </task>
     <servers />
   </component>

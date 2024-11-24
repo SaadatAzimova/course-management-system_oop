@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.util.List;
+
 public class HelloController {
 
     @FXML private Tab courseTab;
@@ -61,24 +63,20 @@ public class HelloController {
     @FXML private void navigateToCourseTab() {
         courseTab.getTabPane().getSelectionModel().select(courseTab);
     }
-
     @FXML private void navigateToEnrollmentTab() {
         enrollmentTab.getTabPane().getSelectionModel().select(enrollmentTab);
     }
-
     @FXML private void navigateToInstructorTab() {
         instructorTab.getTabPane().getSelectionModel().select(instructorTab);
     }
-
     @FXML private void navigateToMainTab() {
         mainTab.getTabPane().getSelectionModel().select(mainTab);
     }
-
     @FXML private void navigateToStudentTab() {
         studentTab.getTabPane().getSelectionModel().select(studentTab);
     }
 
-    // Student Section
+// Student Section
     private ObservableList<Student> studentList = FXCollections.observableArrayList();
     private StudentDAO studentDAO = new StudentDAO() {
         @Override
@@ -161,7 +159,6 @@ public class HelloController {
         studentDAO.update(selectedStudent);
         studentTableView.refresh();
     }
-
     @FXML
     private void removeStudent() {
         Student selectedStudent = studentTableView.getSelectionModel().getSelectedItem();
@@ -172,8 +169,8 @@ public class HelloController {
 
         studentDAO.delete(selectedStudent.getStudentId());
         studentList.remove(selectedStudent);
+        studentActionMessage.setText("Student removed successfully.");
     }
-
     private void clearStudentFields() {
         studentName.clear();
         studentEmail.clear();
@@ -188,6 +185,8 @@ public class HelloController {
     private boolean isValidEmail(String email) {
         return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
+
+
 // Instructor Section
 
     private ObservableList<Instructor> instructorList = FXCollections.observableArrayList();
@@ -197,6 +196,14 @@ public class HelloController {
 
         }
     };
+    @FXML
+    private void updateInstructor() {
+        Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
+        if (selectedInstructor == null) {
+            showAlert(Alert.AlertType.ERROR, "Selection Error", "No instructor selected for update!");
+            return;
+        }
+    }
     @FXML
     public void addInstructor() {
         String name = instructorName.getText().trim();
@@ -221,32 +228,11 @@ public class HelloController {
             instructorList.add(newInstructor);
             loadInstructors(); // Refresh table with updated database content
             clearInstructorFields(); // Clear the fields after successful addition
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Instructor added successfully!");
+            instructorActionMessage.setText("Instructor added successfully!");
         } else {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add instructor!");
         }
     }
-
-    @FXML
-    private void updateInstructor() {
-        Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
-        if (selectedInstructor == null) {
-            showAlert(Alert.AlertType.ERROR, "Selection Error", "No instructor selected for update!");
-            return;
-        }
-
-        // Assuming updates are already made directly in the table (editable cells)
-        boolean success = instructorDAO.update(selectedInstructor);
-        if (success) {
-            instructorTable.refresh();
-            showAlert(Alert.AlertType.INFORMATION, "Update Successful", "Instructor details updated!");
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update instructor!");
-        }
-    }
-
-
-
     @FXML public void removeInstructor() {
         Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
         if (selectedInstructor == null) {
@@ -258,13 +244,11 @@ public class HelloController {
         instructorList.remove(selectedInstructor);
         instructorActionMessage.setText(selectedInstructor.getInstructorName() + " deleted.");
     }
-
     private void clearInstructorFields() {
         instructorName.clear();
         instructorEmail.clear();
         instructorPhone.clear();
     }
-
     private void loadInstructors() {
         instructorList.clear();
         instructorList.addAll(instructorDAO.findAll());

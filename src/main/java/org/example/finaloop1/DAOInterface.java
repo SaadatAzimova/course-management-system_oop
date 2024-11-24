@@ -9,12 +9,12 @@ public interface DAOInterface<T> {
 
         public T read(int id);
 
-        public boolean update(T entity);
+        public void update(T entity);
 
         public void delete(T entity);
 
-        void delete(int student);
-
         public List<T> findAll();
+
+
 
 }

@@ -19,10 +19,8 @@ public class Course {
         this.instructorId = instructorId;
     }
 
-    // No-args constructor
     public Course() {}
 
-    // Getters and Setters
     public int getCourseId() {
         return courseId;
     }

@@ -47,16 +47,17 @@ public class HelloController {
     @FXML private Button instructorUpdate;
     @FXML private TableView<Instructor> instructorTable;
 
+    @FXML private ChoiceBox<Instructor> chooseInstructorForCourse;
     @FXML private Label courseActionMessage;
     @FXML private Button courseAdd;
     @FXML private TextField courseDescription;
-    @FXML private TableColumn<?, ?> courseDescriptionColumn;
+    @FXML private TableColumn<Course, String> courseDescriptionColumn;
     @FXML private TableColumn<?, ?> courseIdColumn;
-    @FXML private TableView<?> courseInitialize;
+    @FXML private TableView<Course> courseTable;
     @FXML private TableColumn<?, ?> courseInstructorColumn;
     @FXML private Button courseRemove;
     @FXML private TextField courseTitle;
-    @FXML private TableColumn<?, ?> courseTitleColumn;
+    @FXML private TableColumn<Course, String> courseTitleColumn;
     @FXML private Button courseUpdate;
 
 
@@ -82,6 +83,11 @@ public class HelloController {
         @Override
         public void delete(Student entity) {
             // Implementation here
+        }
+
+        @Override
+        public List<Course> findCoursesByInstructorId(int instructorId) {
+            return List.of();
         }
     };
     @FXML
@@ -112,6 +118,20 @@ public class HelloController {
         instructorNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         instructorEmailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         instructorPhoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        courseIdColumn.setCellValueFactory(new PropertyValueFactory<>("courseId"));
+        courseTitleColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+        courseDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        courseInstructorColumn.setCellValueFactory(new PropertyValueFactory<>("instructor"));
+
+        // Make columns editable
+        courseTable.setEditable(true);
+        courseTitleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        courseDescriptionColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        // Load courses and instructor IDs
+        loadCourses();
+        loadInstructorIds();
     }
 
     private void loadStudents() {
@@ -195,9 +215,13 @@ public class HelloController {
         public void delete(Instructor entity) {
 
         }
+
+        @Override
+        public List<Course> findCoursesByInstructorId(int instructorId) {
+            return List.of();
+        }
     };
-    @FXML
-    private void updateInstructor() {
+    @FXML private void updateInstructor() {
         Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
         if (selectedInstructor == null) {
             showAlert(Alert.AlertType.ERROR, "Selection Error", "No instructor selected for update!");
@@ -255,4 +279,110 @@ public class HelloController {
         instructorTable.setItems(instructorList);
     }
 
-}
+
+    private ObservableList<Course> courseList = FXCollections.observableArrayList();
+    private CourseDAO courseDAO = new CourseDAO();
+
+    @FXML
+    private void addCourse() {
+        // Retrieve input values
+        String title = courseTitle.getText().trim();
+        String description = courseDescription.getText().trim();
+        Instructor selectedInstructor = (Instructor) chooseInstructorForCourse.getValue();
+
+        // Validate input fields
+        if (title.isEmpty() || description.isEmpty() || selectedInstructor == null) {
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled!");
+            return;
+        }
+
+        // Create new course with selected instructor
+        Course newCourse = new Course(0, title, description, selectedInstructor);
+
+        // Insert course into database
+        int courseId = courseDAO.insert(newCourse);
+        if (courseId > 0) {
+            // Set the generated ID and add to the list
+            newCourse.setCourseId(courseId);
+            courseList.add(newCourse);
+
+            // Clear input fields and show success message
+            courseActionMessage.setText("Course added successfully!");
+            clearCourseFields();
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add course!");
+        }
+    }
+    @FXML private void removeCourse() {
+        Course selectedCourse = courseTable.getSelectionModel().getSelectedItem();
+        if (selectedCourse == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "No course selected!");
+            return;
+        }
+
+        courseDAO.delete(selectedCourse);
+        courseList.remove(selectedCourse);
+        courseActionMessage.setText("Course removed successfully!");
+    }
+    @FXML private void updateCourse() {
+            Course selectedCourse = (Course) courseTable.getSelectionModel().getSelectedItem();
+            if (selectedCourse == null) {
+                showAlert(Alert.AlertType.WARNING, "Selection Error", "No course selected!");
+                return;
+            }
+
+            String newTitle = selectedCourse.getCourseName();
+            String newDescription = selectedCourse.getDescription();
+
+            if (newTitle.isEmpty() || newDescription.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled!");
+                return;
+            }
+
+            courseDAO.update(selectedCourse);
+            courseActionMessage.setText("Course updated successfully!");
+        }
+
+    private void loadCourses() {
+        courseList.clear();
+        courseList.addAll(courseDAO.findAll());
+        courseTable.setItems(courseList);
+    }
+
+    private void loadInstructorIds() {
+        // Clear current items
+        chooseInstructorForCourse.getItems().clear();
+
+        // Retrieve instructors from the database
+        List<Instructor> instructors = instructorDAO.findAll();
+
+        // Populate the ChoiceBox with Instructor objects
+        if (instructors != null) {
+            chooseInstructorForCourse.getItems().addAll(instructors);
+        }
+
+        // Set a custom StringConverter for displaying instructor names with IDs
+        chooseInstructorForCourse.setConverter(new javafx.util.StringConverter<Instructor>() {
+            @Override
+            public String toString(Instructor instructor) {
+                // Display format: "Name (ID)"
+                return instructor != null ? instructor.getInstructorName() + " (" + instructor.getInstructorId() + ")" : "";
+            }
+
+            @Override
+            public Instructor fromString(String string) {
+                // Reverse conversion is not needed in this context
+                return null;
+            }
+        });
+    }
+
+
+    private void clearCourseFields () {
+            courseTitle.clear();
+            courseDescription.clear();
+            chooseInstructorForCourse.setValue(null);
+        }
+    }
+
+

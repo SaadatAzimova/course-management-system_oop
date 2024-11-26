@@ -7,10 +7,12 @@
     <list default="true" id="ade17570-1e71-4d69-b048-31ef1267468f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/CourseDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/CourseDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/DAOInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/DAOInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/InstructorDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/InstructorDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/StudentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/StudentDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/finaloop1/course-management.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/finaloop1/course-management.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,12 +82,47 @@
       <workItem from="1732197994548" duration="8289000" />
       <workItem from="1732282628858" duration="11543000" />
       <workItem from="1732342137584" duration="23967000" />
-      <workItem from="1732430097958" duration="5637000" />
+      <workItem from="1732430097958" duration="10462000" />
+      <workItem from="1732619402492" duration="11151000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
+          <line>170</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/CourseDAO.java</url>
+          <line>155</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
+          <line>171</line>
+          <properties class="org.example.finaloop1.HelloController" method="updateStudent">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
+          <line>326</line>
+          <properties class="org.example.finaloop1.HelloController" method="updateCourse">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/final_oop1$HelloApplication.ic" NAME="HelloApplication Coverage Results" MODIFIED="1732381837272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

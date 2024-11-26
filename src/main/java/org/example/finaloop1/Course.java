@@ -1,26 +1,41 @@
 package org.example.finaloop1;
 
-public class Course {
-    private int courseId;           // Maps to course_id
-    private String courseName;      // Maps to course_name
-    private String description;     // Maps to description
-    private int instructorId;       // Maps to instructor_id
+import java.util.List;
 
-    // Constructor
+public class Course {
+    private int courseId;
+    private String courseName;
+    private String description;
+    private Instructor instructor;  // Changed from instructorId to Instructor object
+
+    // Constructor with Instructor
     public Course(int courseId, String courseName, String description, int instructorId) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.description = description;
-        this.instructorId = instructorId;
+        // You might want to add a method in InstructorDAO to fetch by ID
+        this.instructor = new InstructorDAO() {
+            @Override
+            public void delete(Instructor entity) {
+
+            }
+
+            @Override
+            public List<Course> findCoursesByInstructorId(int instructorId) {
+                return List.of();
+            }
+        }.read(instructorId);
     }
-    public Course( String courseName, String description, int instructorId) {
+
+    // Constructor that takes Instructor object
+    public Course(int courseId, String courseName, String description, Instructor instructor) {
+        this.courseId = courseId;
         this.courseName = courseName;
         this.description = description;
-        this.instructorId = instructorId;
+        this.instructor = instructor;
     }
 
-    public Course() {}
-
+    // Getters and setters
     public int getCourseId() {
         return courseId;
     }
@@ -45,22 +60,16 @@ public class Course {
         this.description = description;
     }
 
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
+    // Convenience method to get instructor ID for database operations
     public int getInstructorId() {
-        return instructorId;
-    }
-
-    public void setInstructorId(int instructorId) {
-        this.instructorId = instructorId;
-    }
-
-    // toString Method
-    @Override
-    public String toString() {
-        return "Course{" +
-                "courseId=" + courseId +
-                ", courseName='" + courseName + '\'' +
-                ", description='" + description + '\'' +
-                ", instructorId=" + instructorId +
-                '}';
+        return instructor != null ? instructor.getInstructorId() : 0;
     }
 }

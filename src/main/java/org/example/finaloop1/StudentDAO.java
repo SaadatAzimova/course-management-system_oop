@@ -55,7 +55,7 @@ public abstract class StudentDAO implements DAOInterface<Student> {
     }
 
     @Override
-    public void update(Student student) {
+    public boolean update(Student student) {
         String query = "UPDATE Students SET student_name = ?, email = ?, phone = ? WHERE student_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -68,8 +68,9 @@ public abstract class StudentDAO implements DAOInterface<Student> {
         }
         catch (SQLException e) {
             logger.log(Level.SEVERE, "Error updating student: " + student, e);
-            return ;
+            return false;
         }
+        return false;
     }
 
 

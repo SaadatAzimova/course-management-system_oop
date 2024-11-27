@@ -5,6 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.Callback;
+import javafx.scene.control.TableColumn;
+import javafx.beans.value.ObservableValue;
 
 import java.util.List;
 
@@ -54,7 +58,7 @@ public class HelloController {
     @FXML private TableColumn<Course, String> courseDescriptionColumn;
     @FXML private TableColumn<?, ?> courseIdColumn;
     @FXML private TableView<Course> courseTable;
-    @FXML private TableColumn<?, ?> courseInstructorColumn;
+    @FXML private TableColumn<Course, Instructor> courseInstructorColumn;
     @FXML private Button courseRemove;
     @FXML private TextField courseTitle;
     @FXML private TableColumn<Course, String> courseTitleColumn;
@@ -122,8 +126,18 @@ public class HelloController {
         courseIdColumn.setCellValueFactory(new PropertyValueFactory<>("courseId"));
         courseTitleColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
         courseDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        courseInstructorColumn.setCellValueFactory(new PropertyValueFactory<>("instructor"));
-
+        courseInstructorColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getInstructor()));
+        courseInstructorColumn.setCellFactory(column -> new TableCell<Course, Instructor>() {
+            @Override
+            protected void updateItem(Instructor instructor, boolean empty) {
+                super.updateItem(instructor, empty);
+                if (empty || instructor == null) {
+                    setText(null);
+                } else {
+                    setText(instructor.getInstructorName() + " (ID: " + instructor.getInstructorId() + ")");
+                }
+            }
+        });
         // Make columns editable
         courseTable.setEditable(true);
         courseTitleColumn.setCellFactory(TextFieldTableCell.forTableColumn());

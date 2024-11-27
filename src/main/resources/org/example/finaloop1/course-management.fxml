@@ -127,21 +127,22 @@
                      <children>
                         <Label layoutX="49.0" layoutY="56.0" text="Corse Title:" />
                         <Label layoutX="49.0" layoutY="132.0" text="Course's description:" />
-                        <TableView fx:id="courseTable" layoutX="244.0" layoutY="24.0" prefHeight="217.0" prefWidth="365.0">
+                        <TableView fx:id="courseTable" layoutX="213.0" layoutY="59.0" prefHeight="217.0" prefWidth="425.0">
                           <columns>
                             <TableColumn fx:id="courseIdColumn" prefWidth="75.0" text="id" />
                             <TableColumn fx:id="courseTitleColumn" prefWidth="87.0" text="title" />
-                              <TableColumn fx:id="courseDescriptionColumn" prefWidth="109.0" text="Description" />
-                              <TableColumn fx:id="courseInstructorColumn" prefWidth="93.0" text="instructor" />
+                              <TableColumn fx:id="courseDescriptionColumn" prefWidth="75.0" text="Description" />
+                              <TableColumn fx:id="courseInstructorColumn" prefWidth="127.0" text="instructor" />
                           </columns>
                         </TableView>
                         <TextField fx:id="courseTitle" layoutX="55.0" layoutY="88.0" />
                         <TextField fx:id="courseDescription" layoutX="57.0" layoutY="167.0" />
-                        <Button fx:id="courseAdd" layoutX="57.0" layoutY="300.0" mnemonicParsing="false" onAction="#addCourse" text="add" />
-                        <Button fx:id="courseRemove" layoutX="531.0" layoutY="303.0" mnemonicParsing="false" onAction="#removeCourse" text="remove" />
-                        <Button fx:id="courseUpdate" layoutX="391.0" layoutY="303.0" mnemonicParsing="false" onAction="#updateCourse" text="update" />
-                        <Label fx:id="courseActionMessage" layoutX="345.0" layoutY="256.0" prefHeight="18.0" prefWidth="185.0" />
-                        <ChoiceBox fx:id="chooseInstructorForCourse" layoutX="42.0" layoutY="229.0" prefWidth="150.0" />
+                        <Button fx:id="courseAdd" layoutX="37.0" layoutY="315.0" mnemonicParsing="false" onAction="#addCourse" text="add" />
+                        <Button fx:id="courseRemove" layoutX="548.0" layoutY="330.0" mnemonicParsing="false" onAction="#removeCourse" text="remove" />
+                        <Button fx:id="courseUpdate" layoutX="427.0" layoutY="330.0" mnemonicParsing="false" onAction="#updateCourse" text="update" />
+                        <Label fx:id="courseActionMessage" layoutX="415.0" layoutY="306.0" prefHeight="18.0" prefWidth="185.0" />
+                        <ChoiceBox fx:id="chooseInstructorForCourse" layoutX="56.0" layoutY="264.0" prefWidth="150.0" />
+                        <Label layoutX="35.0" layoutY="218.0" text="Course's instructor" />
                      </children></AnchorPane>
               </content>
             </Tab>

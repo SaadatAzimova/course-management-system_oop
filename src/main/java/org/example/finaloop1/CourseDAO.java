@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDAO implements DAOInterface<Course> {
-    private final InstructorDAO instructorDAO;
+    // We'll need an InstructorDAO to fetch Instructor objects
+    private InstructorDAO instructorDAO;
 
     public CourseDAO() {
         this.instructorDAO = new InstructorDAO() {
             @Override
             public void delete(Instructor entity) {
-                // Implement if needed
+
             }
 
             @Override
             public List<Course> findCoursesByInstructorId(int instructorId) {
-                return List.of(); // Temporary stub
+                return List.of();
             }
         };
     }
@@ -29,11 +30,8 @@ public class CourseDAO implements DAOInterface<Course> {
 
             statement.setString(1, course.getCourseName());
             statement.setString(2, course.getDescription());
-            if (course.getInstructor() != null) {
-                statement.setInt(3, course.getInstructor().getInstructorId());
-            } else {
-                statement.setNull(3, Types.INTEGER);
-            }
+            // Use getInstructorId() method to get the instructor ID
+            statement.setInt(3, course.getInstructor().getInstructorId());
             statement.executeUpdate();
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -57,11 +55,8 @@ public class CourseDAO implements DAOInterface<Course> {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Instructor instructor = null;
-                int instructorId = resultSet.getInt("instructor_id");
-                if (!resultSet.wasNull()) {
-                    instructor = instructorDAO.read(instructorId);
-                }
+                // Fetch the associated instructor
+                Instructor instructor = instructorDAO.read(resultSet.getInt("instructor_id"));
 
                 return new Course(
                         resultSet.getInt("course_id"),
@@ -84,11 +79,8 @@ public class CourseDAO implements DAOInterface<Course> {
 
             statement.setString(1, course.getCourseName());
             statement.setString(2, course.getDescription());
-            if (course.getInstructor() != null) {
-                statement.setInt(3, course.getInstructor().getInstructorId());
-            } else {
-                statement.setNull(3, Types.INTEGER);
-            }
+            // Use getInstructorId() method to get the instructor ID
+            statement.setInt(3, course.getInstructor().getInstructorId());
             statement.setInt(4, course.getCourseId());
 
             int rowsAffected = statement.executeUpdate();
@@ -126,11 +118,8 @@ public class CourseDAO implements DAOInterface<Course> {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                Instructor instructor = null;
-                int instructorId = resultSet.getInt("instructor_id");
-                if (!resultSet.wasNull()) {
-                    instructor = instructorDAO.read(instructorId);
-                }
+                // Fetch the associated instructor
+                Instructor instructor = instructorDAO.read(resultSet.getInt("instructor_id"));
 
                 courses.add(new Course(
                         resultSet.getInt("course_id"),
@@ -155,6 +144,7 @@ public class CourseDAO implements DAOInterface<Course> {
             statement.setInt(1, instructorId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
+                // Fetch the associated instructor
                 Instructor instructor = instructorDAO.read(instructorId);
 
                 courses.add(new Course(

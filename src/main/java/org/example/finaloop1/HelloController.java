@@ -9,7 +9,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Callback;
 import javafx.scene.control.TableColumn;
 import javafx.beans.value.ObservableValue;
+import javafx.util.StringConverter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class HelloController {
@@ -64,6 +66,25 @@ public class HelloController {
     @FXML private TableColumn<Course, String> courseTitleColumn;
     @FXML private Button courseUpdate;
 
+    @FXML private TableView<Enrollment> enrollTable;
+    @FXML private TableColumn<Enrollment, Integer> enrollIdColumn;
+    @FXML private TableColumn<Enrollment, Student> enrollStudentColumn;
+    @FXML private TableColumn<Enrollment, Course> enrollCourseColumn;
+    @FXML private TableColumn<Enrollment, Integer> enrollYearColumn;
+    @FXML private TableColumn<Enrollment, String> enrollSemesterColumn;
+    @FXML private TableColumn<Enrollment, String> enrollGradeColumn;
+
+    @FXML private Label enrollActionMessage;
+    @FXML private Button enrollRemove;
+    @FXML private Button enrollUpdate;
+    @FXML private Button enrollAdd;
+    @FXML private ChoiceBox<Student> enrollStudent;
+    @FXML private ChoiceBox<Course> enrollCourse;
+    @FXML private ChoiceBox<String> enrollSemesterFilter;
+    @FXML private ChoiceBox<Integer> enrollYearFilter;
+
+    private ObservableList<Enrollment> enrollmentList = FXCollections.observableArrayList();
+    private EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
 
     @FXML private void navigateToCourseTab() {
         courseTab.getTabPane().getSelectionModel().select(courseTab);
@@ -151,6 +172,27 @@ public class HelloController {
     private void loadStudents() {
         studentList.setAll(studentDAO.findAll());
         studentTableView.setItems(studentList);
+        enrollIdColumn.setCellValueFactory(new PropertyValueFactory<>("enrollmentId"));
+        enrollStudentColumn.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(cellData.getValue().getStudent()));
+        enrollCourseColumn.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(cellData.getValue().getCourse()));
+        enrollYearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+        enrollSemesterColumn.setCellValueFactory(new PropertyValueFactory<>("semester"));
+
+        // Make grade column editable
+        enrollGradeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        enrollGradeColumn.setOnEditCommit(event -> {
+            Enrollment enrollment = event.getRowValue();
+            enrollment.setGrade(event.getNewValue());
+            updateEnrollment(enrollment);
+        });
+
+        // Load data
+        loadEnrollments();
+
+        // Setup ChoiceBoxes
+        setupEnrollmentChoiceBoxes();
     }
 
     @FXML
@@ -397,6 +439,134 @@ public class HelloController {
             courseDescription.clear();
             chooseInstructorForCourse.setValue(null);
         }
+    private void setupEnrollmentChoiceBoxes() {
+        // Populate student ChoiceBox
+        List<Student> students = studentDAO.findAll();
+        enrollStudent.getItems().addAll(students);
+        enrollStudent.setConverter(new StringConverter<Student>() {
+            @Override
+            public String toString(Student student) {
+                return student != null ?
+                        student.getStudentName() + " (ID: " + student.getStudentId() + ")" : "";
+            }
+
+            @Override
+            public Student fromString(String string) {
+                return null;
+            }
+        });
+
+        // Populate course ChoiceBox
+        List<Course> courses = courseDAO.findAll();
+        enrollCourse.getItems().addAll(courses);
+        enrollCourse.setConverter(new StringConverter<Course>() {
+            @Override
+            public String toString(Course course) {
+                return course != null ?
+                        course.getCourseName() + " (ID: " + course.getCourseId() + ")" : "";
+            }
+
+            @Override
+            public Course fromString(String string) {
+                return null;
+            }
+        });
+
+        // Semester and Year filter ChoiceBoxes
+        enrollSemesterFilter.getItems().addAll("Spring", "Summer", "Fall");
+
+        // Populate years (current year and past few years)
+        int currentYear = LocalDate.now().getYear();
+        for (int year = currentYear; year >= currentYear - 5; year--) {
+            enrollYearFilter.getItems().add(year);
+        }
+    }
+
+    @FXML
+    private void addEnrollment() {
+        Student selectedStudent = enrollStudent.getValue();
+        Course selectedCourse = enrollCourse.getValue();
+
+        if (selectedStudent == null || selectedCourse == null) {
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "Please select both a student and a course!");
+            return;
+        }
+
+        // Create new enrollment with current year and semester
+        int currentYear = LocalDate.now().getYear();
+        String currentSemester = determineSemester();
+
+        Enrollment newEnrollment = new Enrollment(0, selectedStudent, selectedCourse,
+                currentYear, currentSemester, null);
+
+        int enrollmentId = enrollmentDAO.insert(newEnrollment);
+        if (enrollmentId > 0) {
+            newEnrollment.setEnrollmentId(enrollmentId);
+            enrollmentList.add(newEnrollment);
+            enrollActionMessage.setText("Enrollment added successfully!");
+            clearEnrollmentFields();
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add enrollment!");
+        }
+    }
+
+    @FXML
+    private void removeEnrollment() {
+        Enrollment selectedEnrollment = enrollTable.getSelectionModel().getSelectedItem();
+        if (selectedEnrollment == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "No enrollment selected!");
+            return;
+        }
+
+        enrollmentDAO.delete(selectedEnrollment.getEnrollmentId());
+        enrollmentList.remove(selectedEnrollment);
+        enrollActionMessage.setText("Enrollment removed successfully!");
+    }
+
+    @FXML
+    private void updateEnrollment(Enrollment enrollment) {
+        try {
+            enrollmentDAO.update(enrollment);
+            enrollActionMessage.setText("Enrollment updated successfully!");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Update Error", "Failed to update enrollment!");
+        }
+    }
+
+    @FXML
+    private void filterEnrollments() {
+        // Get filter values
+        Student filteredStudent = enrollStudent.getValue();
+        Course filteredCourse = enrollCourse.getValue();
+        String filteredSemester = enrollSemesterFilter.getValue();
+        Integer filteredYear = enrollYearFilter.getValue();
+
+        // Retrieve filtered list from DAO
+        List<Enrollment> filteredList = enrollmentDAO.findFilteredEnrollments(
+                filteredStudent, filteredCourse, filteredSemester, filteredYear
+        );
+
+        // Update table view
+        enrollmentList.setAll(filteredList);
+    }
+
+    private void loadEnrollments() {
+        enrollmentList.clear();
+        enrollmentList.addAll(enrollmentDAO.findAll());
+        enrollTable.setItems(enrollmentList);
+    }
+
+    private void clearEnrollmentFields() {
+        enrollStudent.setValue(null);
+        enrollCourse.setValue(null);
+    }
+
+    private String determineSemester() {
+        int month = LocalDate.now().getMonthValue();
+        if (month >= 1 && month <= 5) return "Spring";
+        if (month >= 6 && month <= 8) return "Summer";
+        return "Fall";
+    }
     }
 
 

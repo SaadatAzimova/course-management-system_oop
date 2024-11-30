@@ -120,7 +120,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="436.0" prefWidth="737.0">
                      <children>
-                        <TableView fx:id="enrollTable" layoutX="228.0" layoutY="32.0" prefHeight="200.0" prefWidth="515.0">
+                        <TableView fx:id="enrollTable" layoutX="228.0" layoutY="33.0" prefHeight="200.0" prefWidth="515.0">
                           <columns>
                             <TableColumn fx:id="enrollIdColumn" editable="false" prefWidth="63.0" text="id" />
                             <TableColumn fx:id="enrollStudentColumn" editable="false" prefWidth="117.0" text="student" />
@@ -131,14 +131,16 @@
                           </columns>
                         </TableView>
                         <ChoiceBox fx:id="enrollStudent" layoutX="35.0" layoutY="119.0" prefWidth="150.0" />
-                        <ChoiceBox fx:id="enrollCourse" layoutX="44.0" layoutY="197.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="enrollCourse" layoutX="35.0" layoutY="210.0" prefWidth="150.0" />
                         <Button fx:id="enrollAdd" layoutX="35.0" layoutY="366.0" mnemonicParsing="false" text="Add" />
                         <Button fx:id="enrollUpdate" layoutX="359.0" layoutY="369.0" mnemonicParsing="false" text="Update" />
                         <Button fx:id="enrollRemove" layoutX="623.0" layoutY="369.0" mnemonicParsing="false" text="Remove" />
-                        <Label layoutX="62.0" layoutY="24.0" text="Enroll students for a course" />
+                        <Label layoutX="62.0" layoutY="25.0" text="Enroll students for a course" />
                         <Label layoutX="51.0" layoutY="74.0" text="Choose student" />
                         <Label layoutX="54.0" layoutY="168.0" text="Choose course" />
-                        <Label fx:id="enrollActionMessage" layoutX="413.0" layoutY="310.0" text="Label" />
+                        <Label fx:id="enrollActionMessage" layoutX="413.0" layoutY="311.0" text="Label" />
+                        <ChoiceBox fx:id="enrollSemesterFilter" layoutX="570.0" layoutY="11.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="enrollYearFilter" layoutX="341.0" layoutY="12.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
               </content>

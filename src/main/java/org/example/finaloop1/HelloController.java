@@ -11,6 +11,8 @@ import javafx.scene.control.TableColumn;
 import javafx.beans.value.ObservableValue;
 import javafx.util.StringConverter;
 
+import java.awt.event.ActionEvent;
+import javafx.scene.control.Alert;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -175,17 +177,52 @@ public class HelloController {
         enrollIdColumn.setCellValueFactory(new PropertyValueFactory<>("enrollmentId"));
         enrollStudentColumn.setCellValueFactory(cellData ->
                 new SimpleObjectProperty<>(cellData.getValue().getStudent()));
+        enrollStudentColumn.setCellFactory(column -> new TableCell<Enrollment, Student>() {
+            @Override
+            protected void updateItem(Student student, boolean empty) {
+                super.updateItem(student, empty);
+                if (empty || student == null) {
+                    setText(null);
+                } else {
+                    setText(student.getStudentName() + " (ID: " + student.getStudentId() + ")");
+                }
+            }
+        });
         enrollCourseColumn.setCellValueFactory(cellData ->
                 new SimpleObjectProperty<>(cellData.getValue().getCourse()));
+        enrollCourseColumn.setCellFactory(column -> new TableCell<Enrollment, Course>() {
+            @Override
+            protected void updateItem(Course course, boolean empty) {
+                super.updateItem(course, empty);
+                if (empty || course == null) {
+                    setText(null);
+                } else {
+                    setText(course.getCourseName() + " (ID: " + course.getCourseId() + ")");
+                }
+            }
+        });
         enrollYearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
         enrollSemesterColumn.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        enrollGradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
 
         // Make grade column editable
+        enrollTable.setEditable(true);
+
+// Configure the grade column to be editable
+        enrollGradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
         enrollGradeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         enrollGradeColumn.setOnEditCommit(event -> {
             Enrollment enrollment = event.getRowValue();
             enrollment.setGrade(event.getNewValue());
-            updateEnrollment(enrollment);
+
+            try {
+                enrollmentDAO.update(enrollment);
+                enrollActionMessage.setText("Enrollment updated successfully!");
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Update Error", "Failed to update enrollment: " + e.getMessage());
+                // Revert the change if update fails
+                event.getTableView().refresh();
+            }
         });
 
         // Load data
@@ -481,7 +518,23 @@ public class HelloController {
             enrollYearFilter.getItems().add(year);
         }
     }
+    @FXML
+    private void updateEnrollment() {
+        Enrollment selectedEnrollment = enrollTable.getSelectionModel().getSelectedItem();
+        if (selectedEnrollment == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "No enrollment selected!");
+            return;
+        }
 
+        try {
+            enrollmentDAO.update(selectedEnrollment);
+            enrollActionMessage.setText("Enrollment updated successfully!");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Update Error", "Failed to update enrollment: " + e.getMessage());
+        }
+        enrollTable.refresh();
+
+    }
     @FXML
     private void addEnrollment() {
         Student selectedStudent = enrollStudent.getValue();
@@ -524,15 +577,20 @@ public class HelloController {
     }
 
     @FXML
-    private void updateEnrollment(Enrollment enrollment) {
+    private void updateEnrollment(ActionEvent event) {
+        Enrollment selectedEnrollment = enrollTable.getSelectionModel().getSelectedItem();
+        if (selectedEnrollment == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "No enrollment selected!");
+            return;
+        }
+
         try {
-            enrollmentDAO.update(enrollment);
+            enrollmentDAO.update(selectedEnrollment);
             enrollActionMessage.setText("Enrollment updated successfully!");
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Update Error", "Failed to update enrollment!");
         }
     }
-
     @FXML
     private void filterEnrollments() {
         // Get filter values

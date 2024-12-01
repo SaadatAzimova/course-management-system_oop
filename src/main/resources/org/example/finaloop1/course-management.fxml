@@ -132,9 +132,9 @@
                         </TableView>
                         <ChoiceBox fx:id="enrollStudent" layoutX="35.0" layoutY="119.0" prefWidth="150.0" />
                         <ChoiceBox fx:id="enrollCourse" layoutX="35.0" layoutY="210.0" prefWidth="150.0" />
-                        <Button fx:id="enrollAdd" layoutX="35.0" layoutY="366.0" mnemonicParsing="false" text="Add" />
-                        <Button fx:id="enrollUpdate" layoutX="359.0" layoutY="369.0" mnemonicParsing="false" text="Update" />
-                        <Button fx:id="enrollRemove" layoutX="623.0" layoutY="369.0" mnemonicParsing="false" text="Remove" />
+                        <Button fx:id="enrollAdd" layoutX="35.0" layoutY="366.0" mnemonicParsing="false" onAction="#addEnrollment" text="Add" />
+                        <Button fx:id="enrollUpdate" layoutX="359.0" layoutY="369.0" mnemonicParsing="false" onAction="#updateEnrollment" text="Update" />
+                        <Button fx:id="enrollRemove" layoutX="623.0" layoutY="369.0" mnemonicParsing="false" onAction="#removeEnrollment" text="Remove" />
                         <Label layoutX="62.0" layoutY="25.0" text="Enroll students for a course" />
                         <Label layoutX="51.0" layoutY="74.0" text="Choose student" />
                         <Label layoutX="54.0" layoutY="168.0" text="Choose course" />

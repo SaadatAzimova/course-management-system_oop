@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ade17570-1e71-4d69-b048-31ef1267468f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/EnrollmentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/EnrollmentDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/finaloop1/course-management.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/finaloop1/course-management.fxml" afterDir="false" />
     </list>
@@ -82,7 +82,8 @@
       <workItem from="1732619402492" duration="11511000" />
       <workItem from="1732718316237" duration="4148000" />
       <workItem from="1732807453499" duration="1451000" />
-      <workItem from="1732980416087" duration="5903000" />
+      <workItem from="1732980416087" duration="6335000" />
+      <workItem from="1733059621511" duration="5494000" />
     </task>
     <servers />
   </component>

@@ -106,4 +106,128 @@ public abstract class InstructorDAO implements DAOInterface<Instructor> {
         return instructors;
     }
 
+    public List<Instructor> findInstructorsWithTotalStudents() {
+        List<Instructor> instructors = new ArrayList<>();
+        String query = "SELECT i.instructor_id, i.instructor_name, i.email, i.phone, COUNT(DISTINCT e.student_id) AS total_students " +
+                "FROM Instructors i " +
+                "JOIN Courses c ON i.instructor_id = c.instructor_id " +
+                "LEFT JOIN Enrollments e ON c.course_id = e.course_id " +
+                "GROUP BY i.instructor_id, i.instructor_name " +
+                "ORDER BY total_students DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int instructorId = rs.getInt("instructor_id");
+                String instructorName = rs.getString("instructor_name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                int totalStudents = rs.getInt("total_students");
+
+                // Use the constructor that includes totalStudents
+                Instructor instructor = new Instructor(instructorId, instructorName, email, phone, totalStudents);
+                instructors.add(instructor);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching instructors with student counts", e);
+        }
+        return instructors;
+    }
+    public List<Instructor> findTop3InstructorsWithTotalStudents() {
+        List<Instructor> instructors = new ArrayList<>();
+        // Modified query to get the top 3 instructors based on the number of distinct students
+        String query = "SELECT i.instructor_id, i.instructor_name, i.email, i.phone, " +
+                "COUNT(DISTINCT e.student_id) AS total_students " +
+                "FROM Instructors i " +
+                "JOIN Courses c ON i.instructor_id = c.instructor_id " +
+                "LEFT JOIN Enrollments e ON c.course_id = e.course_id " +
+                "GROUP BY i.instructor_id, i.instructor_name " +
+                "ORDER BY total_students DESC " +
+                "LIMIT 3"; // Limits the result to the top 3 instructors
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int instructorId = rs.getInt("instructor_id");
+                String instructorName = rs.getString("instructor_name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                int totalStudents = rs.getInt("total_students");
+
+                // Use the constructor that includes totalStudents
+                Instructor instructor = new Instructor(instructorId, instructorName, email, phone, totalStudents);
+                instructors.add(instructor);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching top 3 instructors with student counts", e);
+        }
+        return instructors;
+    }
+    public List<Instructor> findInstructorsWithTotalCourses() {
+        List<Instructor> instructors = new ArrayList<>();
+        String query = "SELECT i.instructor_id, i.instructor_name, i.email, i.phone, " +
+                "COUNT(c.course_id) AS total_courses " +
+                "FROM Instructors i " +
+                "JOIN Courses c ON i.instructor_id = c.instructor_id " +
+                "GROUP BY i.instructor_id, i.instructor_name " +
+                "ORDER BY total_courses DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int instructorId = rs.getInt("instructor_id");
+                String instructorName = rs.getString("instructor_name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                int totalCourses = rs.getInt("total_courses");
+
+                // Create Instructor object and set the total number of courses
+                Instructor instructor = new Instructor(instructorId, instructorName, email, phone, 0, totalCourses);
+                instructors.add(instructor);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching instructors with course counts", e);
+        }
+        return instructors;
+    }
+    public List<Instructor> findInstructorsWithZeroCourses() {
+        List<Instructor> instructors = new ArrayList<>();
+        String query = "SELECT i.instructor_id, i.instructor_name, i.email, i.phone, " +
+                "COUNT(c.course_id) AS total_courses " +
+                "FROM Instructors i " +
+                "LEFT JOIN Courses c ON i.instructor_id = c.instructor_id " +
+                "GROUP BY i.instructor_id, i.instructor_name " +
+                "HAVING COUNT(c.course_id) = 0"; // Filter for instructors with no courses
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int instructorId = rs.getInt("instructor_id");
+                String instructorName = rs.getString("instructor_name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                int totalCourses = rs.getInt("total_courses");
+
+                // Create Instructor object with 0 courses
+                Instructor instructor = new Instructor(instructorId, instructorName, email, phone, 0, totalCourses);
+                instructors.add(instructor);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching instructors with zero courses", e);
+        }
+        return instructors;
+    }
+
+
+
+
+
 }

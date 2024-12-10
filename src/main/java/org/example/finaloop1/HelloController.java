@@ -6,9 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.util.Callback;
 import javafx.scene.control.TableColumn;
-import javafx.beans.value.ObservableValue;
 import javafx.util.StringConverter;
 
 import java.awt.event.ActionEvent;
@@ -56,11 +54,12 @@ public class HelloController {
     @FXML private Button instructorRemove;
     @FXML private Button instructorUpdate;
     @FXML private TableView<Instructor> instructorTable;
-    @FXML private TableColumn<Instructor, Integer> instructorNumColumn;
+    @FXML private TableColumn<Instructor, String> instructorNumColumn;
     @FXML private Button instructorNumOfCourses;
     @FXML private Button instructorNumOfStuds;
     @FXML private Button instructorShowWithHighestNumOfStuds;
     @FXML private Button instructorShowall;
+    @FXML private Button instructorWithZerocourse;
 
     @FXML private ChoiceBox<Instructor> chooseInstructorForCourse;
     @FXML private Label courseActionMessage;
@@ -142,6 +141,8 @@ public class HelloController {
         instructorNameColumn.setCellValueFactory(new PropertyValueFactory<>("instructorName"));
         instructorEmailColumn.setCellValueFactory(new PropertyValueFactory<>("instructorEmail"));
         instructorPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("instructorPhone"));
+        instructorNumColumn.setCellValueFactory(cellData -> cellData.getValue().instructorNumProperty());
+        // Maps to the getTotalCourses() method
 
         // Load data into both tables
         loadStudents();
@@ -364,9 +365,87 @@ public class HelloController {
         public List<Course> findCoursesByInstructorId(int instructorId) {
             return List.of();
         }
-
-
     };
+    @FXML
+    private void showInstructorWithHighestNumOfStuds() {
+        // Fetch top 3 instructors with the highest number of students
+        List<Instructor> instructors = instructorDAO.findTop3InstructorsWithTotalStudents();
+
+        if (!instructors.isEmpty()) {
+            // Update the instructor's display number for students
+            for (Instructor instructor : instructors) {
+                instructor.setInstructorNumDisplay(String.valueOf(instructor.getTotalStudents())); // Set the number of students to display
+            }
+
+            // Set the table's items to the top 3 instructors
+            instructorTable.getItems().setAll(instructors);
+
+            // Set action message
+            instructorActionMessage.setText("Displaying top 3 instructors with the highest number of unique students.");
+        } else {
+            instructorActionMessage.setText("No instructors found.");
+        }
+    }
+
+
+    @FXML
+    private void showAllInstructorsCourses() {
+        List<Instructor> instructors = instructorDAO.findInstructorsWithTotalCourses();
+        if (!instructors.isEmpty()) {
+            for (Instructor instructor : instructors) {
+                instructor.setInstructorNumDisplay(String.valueOf(instructor.getTotalCourses()));
+            }
+            instructorTable.getItems().setAll(instructors); // Show all instructors with their course counts
+            instructorActionMessage.setText("Displaying all instructors with the number of courses they teach.");
+        } else {
+            instructorActionMessage.setText("No instructors found.");
+        }
+    }
+
+    @FXML
+    private void showInstructorsWithZeroCourses() {
+        List<Instructor> instructors = instructorDAO.findInstructorsWithZeroCourses(); // Fetch instructors with 0 courses
+        if (!instructors.isEmpty()) {
+            instructorTable.getItems().setAll(instructors); // Populate the TableView with the instructors
+            instructorActionMessage.setText("Displaying instructors with 0 courses.");
+        } else {
+            instructorActionMessage.setText("No instructors found with 0 courses.");
+        }
+    }
+
+    @FXML
+    private void showAllInstructorsStudent() {
+        List<Instructor> instructors = instructorDAO.findInstructorsWithTotalStudents();
+        if (!instructors.isEmpty()) {
+            for (Instructor instructor : instructors) {
+                instructor.setInstructorNumDisplay(String.valueOf(instructor.getTotalStudents()));
+            }
+            instructorTable.getItems().setAll(instructors); // Show all instructors with their student counts
+            instructorActionMessage.setText("Displaying all instructors with the number of unique students.");
+        } else {
+            instructorActionMessage.setText("No instructors found.");
+        }
+    }
+
+
+    @FXML
+    private void showAllInstructors() {
+        // Fetch all instructors (with or without student count, depending on the need)
+        List<Instructor> instructors = instructorDAO.findInstructorsWithTotalStudents(); // Or use findAll if you don't need student counts
+
+        // Update TableView with instructors
+        instructorTable.getItems().setAll(instructors);
+
+        // Set action message
+        instructorActionMessage.setText("Displaying all instructors with student counts");
+    }
+
+
+
+
+
+
+
     @FXML private void updateInstructor() {
         Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
         if (selectedInstructor == null) {

@@ -133,10 +133,11 @@
                         <Button fx:id="instructorUpdate" layoutX="494.0" layoutY="395.0" mnemonicParsing="false" onAction="#updateInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Update" />
                         <Button fx:id="instructorRemove" layoutX="639.0" layoutY="395.0" mnemonicParsing="false" onAction="#removeInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Remove" />
                         <Label fx:id="instructorActionMessage" layoutX="325.0" layoutY="347.0" prefHeight="18.0" prefWidth="289.0" text="LABEL" />
-                        <Button fx:id="instructorNumOfStuds" layoutX="325.0" layoutY="474.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="148.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
-                        <Button fx:id="instructorNumOfCourses" layoutX="482.0" layoutY="475.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="149.0" style="-fx-background-color: #6366F1;" text="Show num of Cources" />
-                        <Button fx:id="instructorShowWithHighestNumOfStuds" layoutX="639.0" layoutY="474.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="277.0" style="-fx-background-color: #6366F1;" text="Show instructor with highest num of studets" />
-                        <Button fx:id="instructorShowall" layoutX="791.0" layoutY="395.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Show all" />
+                        <Button fx:id="instructorNumOfStuds" layoutX="325.0" layoutY="474.0" mnemonicParsing="false" onAction="#showAllInstructorsStudent" prefHeight="40.0" prefWidth="148.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
+                        <Button fx:id="instructorNumOfCourses" layoutX="482.0" layoutY="475.0" mnemonicParsing="false" onAction="#showAllInstructorsCourses" prefHeight="39.0" prefWidth="149.0" style="-fx-background-color: #6366F1;" text="Show num of Cources" />
+                        <Button fx:id="instructorShowWithHighestNumOfStuds" layoutX="639.0" layoutY="474.0" mnemonicParsing="false" onAction="#showInstructorWithHighestNumOfStuds" prefHeight="40.0" prefWidth="277.0" style="-fx-background-color: #6366F1;" text="Show instructor with highest num of studets" />
+                        <Button fx:id="instructorShowall" layoutX="791.0" layoutY="395.0" mnemonicParsing="false" onAction="#showAllInstructors" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Show all" />
+                        <Button fx:id="instructorWithZerocourse" layoutX="67.0" layoutY="474.0" mnemonicParsing="false" onAction="#showInstructorsWithZeroCourses" prefHeight="40.0" prefWidth="237.0" style="-fx-background-color: #6366F1;" text="Show instructors without any course" />
                      </children></AnchorPane>
               </content>
             </Tab>

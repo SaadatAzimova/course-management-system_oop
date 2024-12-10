@@ -235,6 +235,9 @@ public class EnrollmentDAO implements DAOInterface<Enrollment> {
         // You might want to implement this in a CourseDAO
         return new ArrayList<>();
     }
+
+
+
     public List<Enrollment> findFilteredEnrollments(Student student, Course course, String semester, Integer year) {
         List<Enrollment> filteredEnrollments = new ArrayList<>();
 

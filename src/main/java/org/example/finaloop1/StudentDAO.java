@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class StudentDAO implements DAOInterface<Student> {
+public abstract class StudentDAO implements DAOInterface<Student>, StudentDAOInterface {
     private static final Logger logger = Logger.getLogger(StudentDAO.class.getName());
 
     @Override
@@ -108,4 +108,33 @@ public abstract class StudentDAO implements DAOInterface<Student> {
         }
         return students;
     }
+@Override
+    public List<Student> findUnenrolledStudents() {
+        List<Student> unenrolledStudents = new ArrayList<>();
+        String query = """
+        SELECT s.student_id, s.student_name, s.email, s.phone 
+        FROM Students s 
+        LEFT JOIN Enrollments e ON s.student_id = e.student_id 
+        WHERE e.student_id IS NULL
+    """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                unenrolledStudents.add(new Student(
+                        rs.getInt("student_id"),
+                        rs.getString("student_name"),
+                        rs.getString("email"),
+                        rs.getString("phone")
+                ));
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching unenrolled students", e);
+        }
+        return unenrolledStudents;
+    }
+
+
+
 }

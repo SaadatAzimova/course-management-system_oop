@@ -41,6 +41,8 @@ public class HelloController {
     @FXML private Button studentRemove;
     @FXML private Button studentUpdate;
     @FXML private Label studentActionMessage;
+    @FXML private Button studentShow;
+    @FXML private Button studentShowNoEnroll;
 
     @FXML private Label instructorActionMessage;
     @FXML private Button instructorAdd;
@@ -54,6 +56,11 @@ public class HelloController {
     @FXML private Button instructorRemove;
     @FXML private Button instructorUpdate;
     @FXML private TableView<Instructor> instructorTable;
+    @FXML private TableColumn<Instructor, Integer> instructorNumColumn;
+    @FXML private Button instructorNumOfCourses;
+    @FXML private Button instructorNumOfStuds;
+    @FXML private Button instructorShowWithHighestNumOfStuds;
+    @FXML private Button instructorShowall;
 
     @FXML private ChoiceBox<Instructor> chooseInstructorForCourse;
     @FXML private Label courseActionMessage;
@@ -67,6 +74,11 @@ public class HelloController {
     @FXML private TextField courseTitle;
     @FXML private TableColumn<Course, String> courseTitleColumn;
     @FXML private Button courseUpdate;
+    @FXML private Label courseAvgStudentMessage;
+    @FXML private Button courseLowStudent;
+    @FXML private Button courseShownumOfstud;
+    @FXML private Button courseShowAvgStud;
+    @FXML private TableColumn<?, ?> courseStudentColumn;
 
     @FXML private TableView<Enrollment> enrollTable;
     @FXML private TableColumn<Enrollment, Integer> enrollIdColumn;
@@ -149,8 +161,10 @@ public class HelloController {
         courseIdColumn.setCellValueFactory(new PropertyValueFactory<>("courseId"));
         courseTitleColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
         courseDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        /*courseStudentColumn.setCellFactory(new PropertyValueFactory<>("courseNum"));*/
         courseInstructorColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getInstructor()));
         courseInstructorColumn.setCellFactory(column -> new TableCell<Course, Instructor>() {
+
             @Override
             protected void updateItem(Instructor instructor, boolean empty) {
                 super.updateItem(instructor, empty);
@@ -165,6 +179,7 @@ public class HelloController {
         courseTable.setEditable(true);
         courseTitleColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         courseDescriptionColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
 
         // Load courses and instructor IDs
         loadCourses();
@@ -255,6 +270,7 @@ public class HelloController {
             student.setStudentId(id);
             studentList.add(student);
             clearStudentFields();
+
             studentActionMessage.setText("Student added successfully.");
         } else {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add student!");
@@ -298,6 +314,41 @@ public class HelloController {
     private boolean isValidEmail(String email) {
         return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
+    @FXML
+    private void studentShow() {
+        // Assuming you have a DAO or service to fetch students
+        List<Student> allStudents = studentDAO.findAll();  // Fetch all students from the database
+
+        // Convert the list of students to an ObservableList for TableView
+        ObservableList<Student> studentObservableList = FXCollections.observableArrayList(allStudents);
+
+        // Set the ObservableList to the TableView
+        studentTableView.setItems(studentObservableList);
+    }
+
+    @FXML
+    private void handleShowUnenrolledStudents() {
+        try {
+            List<Student> unenrolledStudents = studentDAO.findUnenrolledStudents();
+            if (!unenrolledStudents.isEmpty()) {
+                // Clear existing items in the ObservableList and add new ones
+                studentList.clear();
+                studentList.addAll(unenrolledStudents);
+
+                // Bind the ObservableList to the TableView
+                studentTableView.setItems(studentList);
+
+                studentActionMessage.setText("Unenrolled students displayed successfully!");
+            } else {
+                studentActionMessage.setText("No unenrolled students found.");
+            }
+        } catch (Exception e) {
+            studentActionMessage.setText("Error displaying unenrolled students.");
+            e.printStackTrace(); // Replace with proper logging
+        }
+    }
+
+
 
 
 // Instructor Section
@@ -313,6 +364,8 @@ public class HelloController {
         public List<Course> findCoursesByInstructorId(int instructorId) {
             return List.of();
         }
+
+
     };
     @FXML private void updateInstructor() {
         Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
@@ -374,7 +427,9 @@ public class HelloController {
 
 
     private ObservableList<Course> courseList = FXCollections.observableArrayList();
-    private CourseDAO courseDAO = new CourseDAO();
+    private CourseDAO courseDAO = new CourseDAO() {
+
+    };
 
     @FXML
     private void addCourse() {

@@ -24,6 +24,8 @@ public class Course {
             public List<Course> findCoursesByInstructorId(int instructorId) {
                 return List.of();
             }
+
+
         }.read(instructorId);
     }
 

@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.finaloop1.HelloController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="588.0" prefWidth="929.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.finaloop1.HelloController">
    <children>
-      <TabPane layoutX="-8.0" layoutY="-2.0" prefHeight="535.0" prefWidth="825.0" style="-fx-background-color: #cdcdf5;" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutX="-8.0" layoutY="-2.0" prefHeight="594.0" prefWidth="941.0" style="-fx-background-color: #cdcdf5;" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="mainTab" text="Main">
             <content>
@@ -54,9 +54,9 @@
           </Tab>
           <Tab fx:id="studentTab" text="Student">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="363.0" prefWidth="642.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="523.0" prefWidth="886.0">
                      <children>
-                        <TableView fx:id="studentTableView" layoutX="285.0" layoutY="19.0" onSort="#initialize" prefHeight="280.0" prefWidth="500.0">
+                        <TableView fx:id="studentTableView" layoutX="285.0" layoutY="19.0" onSort="#initialize" prefHeight="280.0" prefWidth="507.0">
                           <columns>
                             <TableColumn fx:id="studentIdColumn" editable="false" prefWidth="86.0" style="-fx-background-color: #A8A9F8;" text="id" />
                             <TableColumn fx:id="studentNameColumn" prefWidth="120.0" style="-fx-background-color: #A8A9F8;" text="name" />
@@ -64,7 +64,7 @@
                               <TableColumn fx:id="studentPhoneColumn" prefWidth="147.0" style="-fx-background-color: #A8A9F8;" text="phone" />
                           </columns>
                         </TableView>
-                        <Button fx:id="studentRemove" layoutX="627.0" layoutY="416.0" mnemonicParsing="false" onAction="#removeStudent" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Remove" />
+                        <Button fx:id="studentRemove" layoutX="661.0" layoutY="417.0" mnemonicParsing="false" onAction="#removeStudent" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Remove" />
                         <Button fx:id="studentAdd" layoutX="322.0" layoutY="417.0" mnemonicParsing="false" onAction="#addStudent" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Add" />
                         <Label layoutX="88.0" layoutY="47.0" text="Fill text fields.">
                            <font>
@@ -89,6 +89,8 @@
                         <Button fx:id="goMainTab" layoutX="20.0" layoutY="15.0" mnemonicParsing="false" text="Back" />
                         <TextField fx:id="studentName" layoutX="76.0" layoutY="131.0" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #A5A6F9;" />
                         <Label fx:id="studentActionMessage" layoutX="362.0" layoutY="337.0" prefHeight="18.0" prefWidth="301.0" text="label" />
+                        <Button fx:id="studentShow" layoutX="322.0" layoutY="473.0" mnemonicParsing="false" onAction="#studentShow" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Show all" />
+                        <Button fx:id="studentShowNoEnroll" layoutX="476.0" layoutY="473.0" mnemonicParsing="false" onAction="#handleShowUnenrolledStudents" prefHeight="40.0" prefWidth="310.0" style="-fx-background-color: #6366F1;" text="Show students who did not enrolled to any course" />
                      </children>
                   </AnchorPane>
             </content>
@@ -118,18 +120,23 @@
                               <Font size="18.0" />
                            </font></Label>
                         <Button layoutX="20.0" layoutY="15.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
-                        <TableView fx:id="instructorTable" layoutX="286.0" layoutY="17.0" onSort="#initialize" prefHeight="280.0" prefWidth="500.0">
+                        <TableView fx:id="instructorTable" layoutX="286.0" layoutY="17.0" onSort="#initialize" prefHeight="280.0" prefWidth="640.0">
                           <columns>
                             <TableColumn fx:id="instructorIdColumn" editable="false" prefWidth="75.0" style="-fx-background-color: #A8A9F8;" text="Id" />
                             <TableColumn fx:id="instructorNameColumn" prefWidth="127.0" style="-fx-background-color: #A8A9F8;" text="Name" />
                               <TableColumn fx:id="instructorEmailColumn" prefWidth="158.0" style="-fx-background-color: #A8A9F8;" text="Email" />
                               <TableColumn fx:id="instructorPhoneColumn" prefWidth="139.0" style="-fx-background-color: #A8A9F8;" text="Phone" />
+                              <TableColumn fx:id="instructorNumColumn" editable="false" prefWidth="139.0" style="-fx-background-color: #A8A9F8;" text="Number of" />
                           </columns>
                         </TableView>
-                        <Button fx:id="instructorAdd" layoutX="304.0" layoutY="413.0" mnemonicParsing="false" onAction="#addInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Add" />
-                        <Button fx:id="instructorUpdate" layoutX="480.0" layoutY="414.0" mnemonicParsing="false" onAction="#updateInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Update" />
-                        <Button fx:id="instructorRemove" layoutX="641.0" layoutY="413.0" mnemonicParsing="false" onAction="#removeInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Remove" />
+                        <Button fx:id="instructorAdd" layoutX="325.0" layoutY="395.0" mnemonicParsing="false" onAction="#addInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Add" />
+                        <Button fx:id="instructorUpdate" layoutX="494.0" layoutY="395.0" mnemonicParsing="false" onAction="#updateInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Update" />
+                        <Button fx:id="instructorRemove" layoutX="639.0" layoutY="395.0" mnemonicParsing="false" onAction="#removeInstructor" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Remove" />
                         <Label fx:id="instructorActionMessage" layoutX="325.0" layoutY="347.0" prefHeight="18.0" prefWidth="289.0" text="LABEL" />
+                        <Button fx:id="instructorNumOfStuds" layoutX="325.0" layoutY="474.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="148.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
+                        <Button fx:id="instructorNumOfCourses" layoutX="482.0" layoutY="475.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="149.0" style="-fx-background-color: #6366F1;" text="Show num of Cources" />
+                        <Button fx:id="instructorShowWithHighestNumOfStuds" layoutX="639.0" layoutY="474.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="277.0" style="-fx-background-color: #6366F1;" text="Show instructor with highest num of studets" />
+                        <Button fx:id="instructorShowall" layoutX="791.0" layoutY="395.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="Show all" />
                      </children></AnchorPane>
               </content>
             </Tab>
@@ -184,27 +191,32 @@
                            <font>
                               <Font size="18.0" />
                            </font></Label>
-                        <TableView fx:id="courseTable" layoutX="285.0" layoutY="19.0" prefHeight="280.0" prefWidth="500.0">
+                        <TableView fx:id="courseTable" layoutX="285.0" layoutY="19.0" prefHeight="280.0" prefWidth="643.0">
                           <columns>
                             <TableColumn fx:id="courseIdColumn" prefWidth="75.0" style="-fx-background-color: #A8A9F8;" text="id" />
                             <TableColumn fx:id="courseTitleColumn" prefWidth="105.0" style="-fx-background-color: #A8A9F8;" text="title" />
                               <TableColumn fx:id="courseDescriptionColumn" prefWidth="163.0" style="-fx-background-color: #A8A9F8;" text="Description" />
                               <TableColumn fx:id="courseInstructorColumn" prefWidth="156.0" style="-fx-background-color: #A8A9F8;" text="instructor" />
+                              <TableColumn fx:id="courseStudentColumn" editable="false" prefWidth="156.0" style="-fx-background-color: #A8A9F8;" text="Number of students" />
                           </columns>
                         </TableView>
                         <TextField fx:id="courseTitle" layoutX="55.0" layoutY="88.0" prefHeight="39.0" prefWidth="190.0" style="-fx-background-color: #A5A6F9;" />
                         <TextField fx:id="courseDescription" layoutX="57.0" layoutY="167.0" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #A5A6F9;" />
                         <Button fx:id="courseAdd" layoutX="285.0" layoutY="398.0" mnemonicParsing="false" onAction="#addCourse" prefHeight="39.0" prefWidth="124.0" style="-fx-background-color: #6366F1;" text="add" />
-                        <Button fx:id="courseRemove" layoutX="659.0" layoutY="398.0" mnemonicParsing="false" onAction="#removeCourse" prefHeight="39.0" prefWidth="126.0" style="-fx-background-color: #6366F1;" text="remove" />
-                        <Button fx:id="courseUpdate" layoutX="473.0" layoutY="397.0" mnemonicParsing="false" onAction="#updateCourse" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="update" />
-                        <Label fx:id="courseActionMessage" layoutX="415.0" layoutY="306.0" prefHeight="18.0" prefWidth="185.0" />
+                        <Button fx:id="courseRemove" layoutX="620.0" layoutY="398.0" mnemonicParsing="false" onAction="#removeCourse" prefHeight="39.0" prefWidth="126.0" style="-fx-background-color: #6366F1;" text="remove" />
+                        <Button fx:id="courseUpdate" layoutX="448.0" layoutY="397.0" mnemonicParsing="false" onAction="#updateCourse" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #6366F1;" text="update" />
+                        <Label fx:id="courseActionMessage" layoutX="285.0" layoutY="321.0" prefHeight="18.0" prefWidth="185.0" text="label1" />
                         <ChoiceBox fx:id="chooseInstructorForCourse" layoutX="56.0" layoutY="264.0" prefHeight="26.0" prefWidth="188.0" style="-fx-background-color: #A5A6F9;" />
                         <Label layoutX="35.0" layoutY="218.0" text="Course's instructor">
                            <font>
                               <Font size="18.0" />
                            </font></Label>
-                        <ChoiceBox fx:id="courseShow" layoutX="336.0" layoutY="315.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="courseShow" layoutX="57.0" layoutY="351.0" prefWidth="150.0" />
                         <Button layoutX="20.0" layoutY="15.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
+                        <Label fx:id="courseAvgStudentMessage" layoutX="285.0" layoutY="355.0" prefHeight="18.0" prefWidth="185.0" text="label2" />
+                        <Button fx:id="courseShownumOfstud" layoutX="777.0" layoutY="398.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
+                        <Button fx:id="courseLowStudent" layoutX="285.0" layoutY="454.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="225.0" style="-fx-background-color: #6366F1;" text="Show courses with low enrollment " />
+                        <Button fx:id="courseShowAvgStud" layoutX="641.0" layoutY="454.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="272.0" style="-fx-background-color: #6366F1;" text="Show average num of students in cources" />
                      </children></AnchorPane>
               </content>
             </Tab>

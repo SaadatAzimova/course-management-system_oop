@@ -14,4 +14,5 @@ public interface DAOInterface<T> {
         public List<T> findAll();
 
         List<Course> findCoursesByInstructorId(int instructorId);
-}
+
+        }

@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseDAO implements DAOInterface<Course> {
+public abstract class CourseDAO implements DAOInterface<Course> {
     // We'll need an InstructorDAO to fetch Instructor objects
     private InstructorDAO instructorDAO;
 
@@ -159,4 +159,5 @@ public class CourseDAO implements DAOInterface<Course> {
         }
         return courses;
     }
+
 }

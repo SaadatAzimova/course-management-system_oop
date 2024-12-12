@@ -1,4 +1,5 @@
 package org.example.finaloop1;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +14,9 @@ import java.awt.event.ActionEvent;
 import javafx.scene.control.Alert;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HelloController {
 
@@ -77,7 +81,8 @@ public class HelloController {
     @FXML private Button courseLowStudent;
     @FXML private Button courseShownumOfstud;
     @FXML private Button courseShowAvgStud;
-    @FXML private TableColumn<?, ?> courseStudentColumn;
+    @FXML private Button CourseShowAll;
+    @FXML private TableColumn<Course, String> courseStudentColumn;
 
     @FXML private TableView<Enrollment> enrollTable;
     @FXML private TableColumn<Enrollment, Integer> enrollIdColumn;
@@ -603,7 +608,52 @@ public class HelloController {
             }
         });
     }
+    @FXML
+    private void handleCourseShowNumOfStud() {
+        // Fetch all courses and student counts
+        List<Course> courses = courseDAO.findAll();
+        Map<String, Integer> studentCounts = courseDAO.getStudentCountByCourse();
 
+        // Update the number of students for each course
+        for (Course course : courses) {
+            int numStudents = studentCounts.getOrDefault(course.getCourseName(), 0);
+            course.setNumberOfStudents(numStudents); // Set the number of students
+        }
+
+        // Refresh the table with updated courses
+        courseTable.getItems().setAll(courses);
+        courseActionMessage.setText("Student numbers displayed for each course.");
+        // Set up the student column to display the number of students
+        courseStudentColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(String.valueOf(
+                        cellData.getValue().getNumberOfStudents()
+                ))
+        );
+    }
+
+    @FXML
+    private void handleCourseShowAll() {
+        try {
+            // Retrieve all courses from the DAO
+            List<Course> courses = courseDAO.findAll();
+
+            if (courses.isEmpty()) {
+                courseActionMessage.setText("No courses found.");
+            } else {
+                // Populate the TableView
+                ObservableList<Course> courseList = FXCollections.observableArrayList(courses);
+                courseTable.setItems(courseList);
+
+                // Set the courseStudentColumn to " "
+                courseStudentColumn.setCellValueFactory(cellData -> new SimpleStringProperty(" "));
+
+                courseActionMessage.setText("All courses loaded successfully.");
+            }
+        } catch (Exception e) {
+            courseActionMessage.setText("Error loading courses: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     private void clearCourseFields () {
             courseTitle.clear();
@@ -643,6 +693,8 @@ public class HelloController {
             }
         });
 
+
+
         // Semester and Year filter ChoiceBoxes
         enrollSemesterFilter.getItems().addAll("Spring", "Summer", "Fall");
 
@@ -650,6 +702,49 @@ public class HelloController {
         int currentYear = LocalDate.now().getYear();
         for (int year = currentYear; year >= currentYear - 5; year--) {
             enrollYearFilter.getItems().add(year);
+        }
+    }
+
+
+    @FXML
+    private void handleCourseLowStudentAction() {
+        try {
+            int maxStudents = 5; // For example, courses with fewer than 5 students
+
+            List<Course> lowStudentCourses = courseDAO.findCoursesWithFewStudents(maxStudents);
+
+            if (lowStudentCourses.isEmpty()) {
+                courseActionMessage.setText("No courses found with fewer than " + maxStudents + " students.");
+            } else {
+                // Clear existing table data
+                courseTable.getItems().clear();
+
+                // Populate the table with courses having few students
+                courseTable.getItems().addAll(lowStudentCourses);
+
+                // Set up the student column to display the number of students
+                courseStudentColumn.setCellValueFactory(cellData ->
+                        new SimpleStringProperty(String.valueOf(
+                                cellData.getValue().getNumberOfStudents()
+                        ))
+                );
+
+                courseActionMessage.setText("Found " + lowStudentCourses.size() + " courses with fewer than " + maxStudents + " students.");
+            }
+        } catch (Exception e) {
+            courseActionMessage.setText("Error finding courses with few students.");
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void showAverageStudents() {
+        int avgStudents = courseDAO.getAverageStudentsPerCourse();
+
+        // Update the label with the result
+        if (avgStudents >= 0) {
+            courseActionMessage.setText(String.format("Average students per course: %d", avgStudents));
+        } else {
+            courseActionMessage.setText("Could not retrieve average students.");
         }
     }
     @FXML

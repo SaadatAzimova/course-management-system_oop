@@ -214,10 +214,10 @@
                            </font></Label>
                         <ChoiceBox fx:id="courseShow" layoutX="57.0" layoutY="351.0" prefWidth="150.0" />
                         <Button layoutX="20.0" layoutY="15.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
-                        <Label fx:id="courseAvgStudentMessage" layoutX="285.0" layoutY="355.0" prefHeight="18.0" prefWidth="185.0" text="label2" />
-                        <Button fx:id="courseShownumOfstud" layoutX="777.0" layoutY="398.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
-                        <Button fx:id="courseLowStudent" layoutX="285.0" layoutY="454.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="225.0" style="-fx-background-color: #6366F1;" text="Show courses with low enrollment " />
-                        <Button fx:id="courseShowAvgStud" layoutX="641.0" layoutY="454.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="272.0" style="-fx-background-color: #6366F1;" text="Show average num of students in cources" />
+                        <Button fx:id="courseShownumOfstud" layoutX="777.0" layoutY="398.0" mnemonicParsing="false" onAction="#handleCourseShowNumOfStud" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
+                        <Button fx:id="courseLowStudent" layoutX="285.0" layoutY="454.0" mnemonicParsing="false" onAction="#handleCourseLowStudentAction" prefHeight="39.0" prefWidth="225.0" style="-fx-background-color: #6366F1;" text="Show courses with low enrollment " />
+                        <Button fx:id="courseShowAvgStud" layoutX="656.0" layoutY="454.0" mnemonicParsing="false" onAction="#showAverageStudents" prefHeight="39.0" prefWidth="272.0" style="-fx-background-color: #6366F1;" text="Show average num of students in cources" />
+                        <Button fx:id="CourseShowAll" layoutX="523.0" layoutY="454.0" mnemonicParsing="false" onAction="#handleCourseShowAll" prefHeight="39.0" prefWidth="124.0" style="-fx-background-color: #6366F1;" text="Show all" />
                      </children></AnchorPane>
               </content>
             </Tab>

@@ -6,7 +6,8 @@ public class Course {
     private int courseId;
     private String courseName;
     private String description;
-    private Instructor instructor;  // Changed from instructorId to Instructor object
+    private Instructor instructor;
+    private int numberOfStudents;// Changed from instructorId to Instructor object
 
     // Constructor with Instructor
     public Course(int courseId, String courseName, String description, int instructorId) {
@@ -35,6 +36,21 @@ public class Course {
         this.courseName = courseName;
         this.description = description;
         this.instructor = instructor;
+    }
+    public Course(int courseId, String courseName, String description, Instructor instructor, int numberOfStudents) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.description = description;
+        this.instructor = instructor;
+        this.numberOfStudents = numberOfStudents;
+    }
+
+    public int getNumberOfStudents() {
+        return numberOfStudents;
+    }
+
+    public void setNumberOfStudents(int numberOfStudents) {
+        this.numberOfStudents = numberOfStudents;
     }
 
     // Getters and setters

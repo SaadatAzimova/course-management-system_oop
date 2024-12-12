@@ -2,7 +2,9 @@ package org.example.finaloop1;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class CourseDAO implements DAOInterface<Course> {
     // We'll need an InstructorDAO to fetch Instructor objects
@@ -133,6 +135,24 @@ public abstract class CourseDAO implements DAOInterface<Course> {
         }
         return courses;
     }
+    public Map<String, Integer> getStudentCountByCourse() {
+        Map<String, Integer> courseStudentCounts = new HashMap<>();
+        String query = "SELECT c.course_id, c.course_name, c.description, c.instructor_id, COUNT(e.student_id) AS total_students " +
+                "FROM Courses c LEFT JOIN Enrollments e ON c.course_id = e.course_id " +
+                "GROUP BY c.course_id, c.course_name ORDER BY total_students DESC";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                courseStudentCounts.put(resultSet.getString("course_name"), resultSet.getInt("total_students"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courseStudentCounts;
+    }
 
     @Override
     public List<Course> findCoursesByInstructorId(int instructorId) {
@@ -159,5 +179,70 @@ public abstract class CourseDAO implements DAOInterface<Course> {
         }
         return courses;
     }
+    public List<Course> findCoursesWithFewStudents(int maxStudents) {
+        List<Course> courses = new ArrayList<>();
+        String query = "SELECT c.course_id, c.course_name, c.description, c.instructor_id, " +
+                "COALESCE(COUNT(DISTINCT e.student_id), 0) AS total_students " +
+                "FROM Courses c " +
+                "LEFT JOIN Enrollments e ON c.course_id = e.course_id " +
+                "GROUP BY c.course_id, c.course_name, c.description, c.instructor_id " +
+                "HAVING COALESCE(COUNT(DISTINCT e.student_id), 0) < ? " +
+                "ORDER BY total_students ASC";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, maxStudents);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int courseId = resultSet.getInt("course_id");
+                String courseName = resultSet.getString("course_name");
+                String description = resultSet.getString("description");
+                int instructorId = resultSet.getInt("instructor_id");
+                int totalStudents = resultSet.getInt("total_students");
+
+
+                // Fetch the full instructor details
+                Instructor instructor = instructorDAO.read(instructorId);
+
+                // If instructor is not found, create a minimal instructor object
+                if (instructor == null) {
+                    instructor = new Instructor(instructorId, "Unknown", "", "", 0);
+                }
+
+                // Creating a course object with the number of students
+                Course course = new Course(courseId, courseName, description, instructor, totalStudents);
+
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+    public int getAverageStudentsPerCourse() {
+        String query = "SELECT ROUND(AVG(student_count), 0) AS avg_students_per_course " +
+                "FROM (" +
+                "    SELECT c.course_id, COUNT(e.student_id) AS student_count " +
+                "    FROM Courses c " +
+                "    LEFT JOIN Enrollments e ON c.course_id = e.course_id " +
+                "    GROUP BY c.course_id" +
+                ") AS student_counts";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                // Return the rounded integer value
+                return resultSet.getInt("avg_students_per_course");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if an error occurs or no result is found
+    }
+
 
 }

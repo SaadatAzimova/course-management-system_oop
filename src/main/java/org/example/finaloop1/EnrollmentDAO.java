@@ -3,6 +3,7 @@ package org.example.finaloop1;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class EnrollmentDAO implements DAOInterface<Enrollment> {
@@ -332,5 +333,201 @@ public class EnrollmentDAO implements DAOInterface<Enrollment> {
         }
 
         return filteredEnrollments;
+    }
+    public List<Enrollment> findFilteredEnrollments(Student student, Course course, Optional<String> semester, Optional<Integer> year) {
+        List<Enrollment> filteredEnrollments = new ArrayList<>();
+
+        // Start with a base query
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT e.enrollment_id, e.student_id, e.course_id, e.year, e.semester, e.grade, " +
+                        "s.student_name, s.email AS student_email, s.phone AS student_phone, " +
+                        "c.course_name, c.description AS course_description, " +
+                        "i.instructor_id, i.instructor_name, i.email AS instructor_email, i.phone AS instructor_phone " +
+                        "FROM Enrollments e " +
+                        "JOIN Students s ON e.student_id = s.student_id " +
+                        "JOIN Courses c ON e.course_id = c.course_id " +
+                        "JOIN Instructors i ON c.instructor_id = i.instructor_id " +
+                        "WHERE 1=1"
+        );
+
+
+
+        // List to store parameters for prepared statement
+        List<Object> params = new ArrayList<>();
+
+        // Add filters based on non-empty optional parameters
+        if (student != null) {
+            queryBuilder.append(" AND e.student_id = ?");
+            params.add(student.getStudentId());
+        }
+
+        if (course != null) {
+            queryBuilder.append(" AND e.course_id = ?");
+            params.add(course.getCourseId());
+        }
+
+        if (semester.isPresent() && !semester.get().isEmpty()) {
+            queryBuilder.append(" AND e.semester = ?");
+            params.add(semester.get());
+        }
+
+        if (year.isPresent() && year.get() > 0) {
+            queryBuilder.append(" AND e.year = ?");
+            params.add(year.get());
+        }
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(queryBuilder.toString())) {
+
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+
+            // Execute query
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    // Create Instructor
+                    Instructor instructor = new Instructor(
+                            rs.getInt("instructor_id"),
+                            rs.getString("instructor_name"),
+                            rs.getString("instructor_email"),
+                            rs.getString("instructor_phone")
+                    );
+
+                    // Create Course
+                    Course enrolledCourse = new Course(
+                            rs.getInt("course_id"),
+                            rs.getString("course_name"),
+                            rs.getString("course_description"),
+                            instructor
+                    );
+
+                    // Create Student
+                    Student enrolledStudent = new Student(
+                            rs.getInt("student_id"),
+                            rs.getString("student_name"),
+                            rs.getString("student_email"),
+                            rs.getString("student_phone")
+                    );
+
+                    // Create Enrollment
+                    Enrollment enrollment = new Enrollment(
+                            rs.getInt("enrollment_id"),
+                            enrolledStudent,
+                            enrolledCourse,
+                            rs.getInt("year"),
+                            rs.getString("semester"),
+                            rs.getString("grade")
+                    );
+
+                    filteredEnrollments.add(enrollment);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle exception - you might want to throw a custom DAO exception
+        }
+
+        return filteredEnrollments;
+    }
+    public List<Student> findAllDistinctStudents() {
+        List<Student> distinctStudents = new ArrayList<>();
+        String sql = "SELECT DISTINCT s.student_id, s.student_name, s.email, s.phone " +
+                "FROM Enrollments e " +
+                "JOIN Students s ON e.student_id = s.student_id";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Student student = new Student(
+                        rs.getInt("student_id"),
+                        rs.getString("student_name"),
+                        rs.getString("email"),
+                        rs.getString("phone")
+                );
+                distinctStudents.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return distinctStudents;
+    }
+
+    // Method to get all distinct courses from enrollments
+    public List<Course> findAllDistinctCourses() {
+        List<Course> distinctCourses = new ArrayList<>();
+        String sql = "SELECT DISTINCT c.course_id, c.course_name, c.description, " +
+                "i.instructor_id, i.instructor_name " +
+                "FROM Enrollments e " +
+                "JOIN Courses c ON e.course_id = c.course_id " +
+                "JOIN Instructors i ON c.instructor_id = i.instructor_id";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Instructor instructor = new Instructor(
+                        rs.getInt("instructor_id"),
+                        rs.getString("instructor_name"),
+                        null, // Email not fetched in this query
+                        null  // Phone not fetched in this query
+                );
+
+                Course course = new Course(
+                        rs.getInt("course_id"),
+                        rs.getString("course_name"),
+                        rs.getString("description"),
+                        instructor
+                );
+                distinctCourses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return distinctCourses;
+    }
+
+    // Method to get all distinct semesters from enrollments
+    public List<String> findAllDistinctSemesters() {
+        List<String> distinctSemesters = new ArrayList<>();
+        String sql = "SELECT DISTINCT semester FROM Enrollments ORDER BY semester";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                distinctSemesters.add(rs.getString("semester"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return distinctSemesters;
+    }
+
+    // Method to get all distinct years from enrollments
+    public List<Integer> findAllDistinctYears() {
+        List<Integer> distinctYears = new ArrayList<>();
+        String sql = "SELECT DISTINCT year FROM Enrollments ORDER BY year";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                distinctYears.add(rs.getInt("year"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return distinctYears;
     }
 }

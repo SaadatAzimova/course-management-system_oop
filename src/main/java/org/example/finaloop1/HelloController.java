@@ -9,14 +9,17 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TableColumn;
 import javafx.util.StringConverter;
-
+import java.util.LinkedHashSet;
 import java.awt.event.ActionEvent;
 import javafx.scene.control.Alert;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class HelloController {
 
@@ -77,7 +80,6 @@ public class HelloController {
     @FXML private TextField courseTitle;
     @FXML private TableColumn<Course, String> courseTitleColumn;
     @FXML private Button courseUpdate;
-    @FXML private Label courseAvgStudentMessage;
     @FXML private Button courseLowStudent;
     @FXML private Button courseShownumOfstud;
     @FXML private Button courseShowAvgStud;
@@ -96,6 +98,7 @@ public class HelloController {
     @FXML private Button enrollRemove;
     @FXML private Button enrollUpdate;
     @FXML private Button enrollAdd;
+    @FXML private Button enrollReset;
     @FXML private ChoiceBox<Student> enrollStudent;
     @FXML private ChoiceBox<Course> enrollCourse;
     @FXML private ChoiceBox<String> enrollSemesterFilter;
@@ -805,24 +808,50 @@ public class HelloController {
         enrollActionMessage.setText("Enrollment removed successfully!");
     }
 
-    @FXML
-    private void updateEnrollment(ActionEvent event) {
-        Enrollment selectedEnrollment = enrollTable.getSelectionModel().getSelectedItem();
-        if (selectedEnrollment == null) {
-            showAlert(Alert.AlertType.WARNING, "Selection Error", "No enrollment selected!");
-            return;
-        }
 
-        try {
-            enrollmentDAO.update(selectedEnrollment);
-            enrollActionMessage.setText("Enrollment updated successfully!");
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Update Error", "Failed to update enrollment!");
-        }
+    private void populateFilterChoiceBoxes() {
+        // Populate Student Filter with Distinct Students and "All" option
+        Set<Student> uniqueStudents = enrollmentList.stream()
+                .map(Enrollment::getStudent)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollStudent.getItems().clear();
+        enrollStudent.getItems().add(null); // "All" option
+        enrollStudent.getItems().addAll(uniqueStudents);
+
+        // Populate Course Filter with Distinct Courses and "All" option
+        Set<Course> uniqueCourses = enrollmentList.stream()
+                .map(Enrollment::getCourse)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollCourse.getItems().clear();
+        enrollCourse.getItems().add(null); // "All" option
+        enrollCourse.getItems().addAll(uniqueCourses);
+
+        // Populate Semester Filter with Distinct Semesters and "All" option
+        Set<String> uniqueSemesters = enrollmentList.stream()
+                .map(Enrollment::getSemester)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollSemesterFilter.getItems().clear();
+        enrollSemesterFilter.getItems().add(null); // "All" option
+        enrollSemesterFilter.getItems().addAll(uniqueSemesters);
+
+        // Populate Year Filter with Distinct Years and "All" option
+        Set<Integer> uniqueYears = enrollmentList.stream()
+                .map(Enrollment::getYear)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollYearFilter.getItems().clear();
+        enrollYearFilter.getItems().add(null); // "All" option
+        enrollYearFilter.getItems().addAll(uniqueYears);
+
+        // Add listeners to trigger filtering on selection
+        enrollStudent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+        enrollCourse.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+        enrollSemesterFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+        enrollYearFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
     }
+
     @FXML
     private void filterEnrollments() {
-        // Get filter values
+        // Get filter values (null represents "All" option)
         Student filteredStudent = enrollStudent.getValue();
         Course filteredCourse = enrollCourse.getValue();
         String filteredSemester = enrollSemesterFilter.getValue();
@@ -837,11 +866,30 @@ public class HelloController {
         enrollmentList.setAll(filteredList);
     }
 
+
+
     private void loadEnrollments() {
         enrollmentList.clear();
         enrollmentList.addAll(enrollmentDAO.findAll());
         enrollTable.setItems(enrollmentList);
+
+        // Populate filter choice boxes after loading enrollments
+        populateFilterChoiceBoxes();
     }
+
+    // Add reset filter method
+    @FXML
+    private void resetEnrollmentFilter() {
+        // Clear all filter choice boxes
+        enrollStudent.setValue(null);
+        enrollCourse.setValue(null);
+        enrollSemesterFilter.setValue(null);
+        enrollYearFilter.setValue(null);
+
+        // Reload all enrollments
+        loadEnrollments();
+    }
+
 
     private void clearEnrollmentFields() {
         enrollStudent.setValue(null);
@@ -854,6 +902,8 @@ public class HelloController {
         if (month >= 6 && month <= 8) return "Summer";
         return "Fall";
     }
+
+
     }
 
 

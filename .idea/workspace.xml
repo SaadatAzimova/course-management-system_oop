@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ade17570-1e71-4d69-b048-31ef1267468f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/Course.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/CourseDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/CourseDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/EnrollmentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/EnrollmentDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/finaloop1/course-management.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/finaloop1/course-management.fxml" afterDir="false" />
     </list>
@@ -91,7 +90,8 @@
       <workItem from="1733665665308" duration="1496000" />
       <workItem from="1733836963646" duration="13519000" />
       <workItem from="1733928942171" duration="7636000" />
-      <workItem from="1733978994656" duration="12178000" />
+      <workItem from="1733978994656" duration="12829000" />
+      <workItem from="1734096197221" duration="8566000" />
     </task>
     <servers />
   </component>
@@ -103,9 +103,15 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-field">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
-          <line>67</line>
+          <line>70</line>
           <properties field="chooseInstructorForCourse" class="org.example.finaloop1.HelloController" />
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-field">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
+          <line>96</line>
+          <properties field="enrollActionMessage" class="org.example.finaloop1.HelloController" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

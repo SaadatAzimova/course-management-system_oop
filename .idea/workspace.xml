@@ -91,7 +91,8 @@
       <workItem from="1733836963646" duration="13519000" />
       <workItem from="1733928942171" duration="7636000" />
       <workItem from="1733978994656" duration="12829000" />
-      <workItem from="1734096197221" duration="8566000" />
+      <workItem from="1734096197221" duration="8824000" />
+      <workItem from="1734185394676" duration="16129000" />
     </task>
     <servers />
   </component>
@@ -103,15 +104,9 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-field">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
-          <line>70</line>
-          <properties field="chooseInstructorForCourse" class="org.example.finaloop1.HelloController" />
+          <line>1</line>
+          <properties field="enrollCourseFilter" class="org.example.finaloop1.HelloController" />
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-field">
-          <url>file://$PROJECT_DIR$/src/main/java/org/example/finaloop1/HelloController.java</url>
-          <line>96</line>
-          <properties field="enrollActionMessage" class="org.example.finaloop1.HelloController" />
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

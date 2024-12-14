@@ -9,16 +9,19 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TableColumn;
 import javafx.util.StringConverter;
-import java.util.LinkedHashSet;
+
 import java.awt.event.ActionEvent;
 import javafx.scene.control.Alert;
+
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HelloController {
@@ -80,6 +83,7 @@ public class HelloController {
     @FXML private TextField courseTitle;
     @FXML private TableColumn<Course, String> courseTitleColumn;
     @FXML private Button courseUpdate;
+    @FXML private Label courseAvgStudentMessage;
     @FXML private Button courseLowStudent;
     @FXML private Button courseShownumOfstud;
     @FXML private Button courseShowAvgStud;
@@ -101,6 +105,8 @@ public class HelloController {
     @FXML private Button enrollReset;
     @FXML private ChoiceBox<Student> enrollStudent;
     @FXML private ChoiceBox<Course> enrollCourse;
+    @FXML private ChoiceBox<Student> enrollStudentFilter;
+    @FXML private ChoiceBox<Course> enrollCourseFilter;
     @FXML private ChoiceBox<String> enrollSemesterFilter;
     @FXML private ChoiceBox<Integer> enrollYearFilter;
 
@@ -122,8 +128,7 @@ public class HelloController {
     @FXML private void navigateToStudentTab() {
         studentTab.getTabPane().getSelectionModel().select(studentTab);
     }
-
-// Student Section
+    // Student Section
     private ObservableList<Student> studentList = FXCollections.observableArrayList();
     private StudentDAO studentDAO = new StudentDAO() {
         @Override
@@ -136,8 +141,7 @@ public class HelloController {
             return List.of();
         }
     };
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         // Initialize Student Table Columns
         studentIdColumn.setCellValueFactory(new PropertyValueFactory<>("studentId"));
         studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
@@ -194,7 +198,6 @@ public class HelloController {
         loadCourses();
         loadInstructorIds();
     }
-
     private void loadStudents() {
         studentList.setAll(studentDAO.findAll());
         studentTableView.setItems(studentList);
@@ -255,9 +258,7 @@ public class HelloController {
         // Setup ChoiceBoxes
         setupEnrollmentChoiceBoxes();
     }
-
-    @FXML
-    private void addStudent() {
+    @FXML private void addStudent() {
         String name = studentName.getText().trim();
         String email = studentEmail.getText().trim();
         String phone = studentPhone.getText().trim();
@@ -285,9 +286,7 @@ public class HelloController {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add student!");
         }
     }
-
-    @FXML
-    private void updateStudent() {
+    @FXML private void updateStudent() {
         Student selectedStudent = studentTableView.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
             showAlert(Alert.AlertType.ERROR, "Selection Error", "No student selected for update!");
@@ -297,8 +296,7 @@ public class HelloController {
         studentDAO.update(selectedStudent);
         studentTableView.refresh();
     }
-    @FXML
-    private void removeStudent() {
+    @FXML private void removeStudent() {
         Student selectedStudent = studentTableView.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
             showAlert(Alert.AlertType.ERROR, "Selection Error", "No student selected!");
@@ -323,8 +321,7 @@ public class HelloController {
     private boolean isValidEmail(String email) {
         return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
-    @FXML
-    private void studentShow() {
+    @FXML private void studentShow() {
         // Assuming you have a DAO or service to fetch students
         List<Student> allStudents = studentDAO.findAll();  // Fetch all students from the database
 
@@ -334,9 +331,7 @@ public class HelloController {
         // Set the ObservableList to the TableView
         studentTableView.setItems(studentObservableList);
     }
-
-    @FXML
-    private void handleShowUnenrolledStudents() {
+    @FXML private void handleShowUnenrolledStudents() {
         try {
             List<Student> unenrolledStudents = studentDAO.findUnenrolledStudents();
             if (!unenrolledStudents.isEmpty()) {
@@ -356,26 +351,19 @@ public class HelloController {
             e.printStackTrace(); // Replace with proper logging
         }
     }
-
-
-
-
 // Instructor Section
-
     private ObservableList<Instructor> instructorList = FXCollections.observableArrayList();
     private InstructorDAO instructorDAO = new InstructorDAO() {
         @Override
         public void delete(Instructor entity) {
 
         }
-
         @Override
         public List<Course> findCoursesByInstructorId(int instructorId) {
             return List.of();
         }
     };
-    @FXML
-    private void showInstructorWithHighestNumOfStuds() {
+    @FXML private void showInstructorWithHighestNumOfStuds() {
         // Fetch top 3 instructors with the highest number of students
         List<Instructor> instructors = instructorDAO.findTop3InstructorsWithTotalStudents();
 
@@ -394,10 +382,7 @@ public class HelloController {
             instructorActionMessage.setText("No instructors found.");
         }
     }
-
-
-    @FXML
-    private void showAllInstructorsCourses() {
+    @FXML private void showAllInstructorsCourses() {
         List<Instructor> instructors = instructorDAO.findInstructorsWithTotalCourses();
         if (!instructors.isEmpty()) {
             for (Instructor instructor : instructors) {
@@ -409,9 +394,7 @@ public class HelloController {
             instructorActionMessage.setText("No instructors found.");
         }
     }
-
-    @FXML
-    private void showInstructorsWithZeroCourses() {
+    @FXML private void showInstructorsWithZeroCourses() {
         List<Instructor> instructors = instructorDAO.findInstructorsWithZeroCourses(); // Fetch instructors with 0 courses
         if (!instructors.isEmpty()) {
             instructorTable.getItems().setAll(instructors); // Populate the TableView with the instructors
@@ -420,9 +403,7 @@ public class HelloController {
             instructorActionMessage.setText("No instructors found with 0 courses.");
         }
     }
-
-    @FXML
-    private void showAllInstructorsStudent() {
+    @FXML private void showAllInstructorsStudent() {
         List<Instructor> instructors = instructorDAO.findInstructorsWithTotalStudents();
         if (!instructors.isEmpty()) {
             for (Instructor instructor : instructors) {
@@ -434,10 +415,7 @@ public class HelloController {
             instructorActionMessage.setText("No instructors found.");
         }
     }
-
-
-    @FXML
-    private void showAllInstructors() {
+    @FXML private void showAllInstructors() {
         // Fetch all instructors (with or without student count, depending on the need)
         List<Instructor> instructors = instructorDAO.findInstructorsWithTotalStudents(); // Or use findAll if you don't need student counts
 
@@ -447,22 +425,14 @@ public class HelloController {
         // Set action message
         instructorActionMessage.setText("Displaying all instructors with student counts");
     }
-
-
-
-
-
-
-
-    @FXML private void updateInstructor() {
+@FXML private void updateInstructor() {
         Instructor selectedInstructor = instructorTable.getSelectionModel().getSelectedItem();
         if (selectedInstructor == null) {
             showAlert(Alert.AlertType.ERROR, "Selection Error", "No instructor selected for update!");
             return;
         }
     }
-    @FXML
-    public void addInstructor() {
+    @FXML public void addInstructor() {
         String name = instructorName.getText().trim();
         String email = instructorEmail.getText().trim();
         String phone = instructorPhone.getText().trim();
@@ -511,15 +481,11 @@ public class HelloController {
         instructorList.addAll(instructorDAO.findAll());
         instructorTable.setItems(instructorList);
     }
-
-
-    private ObservableList<Course> courseList = FXCollections.observableArrayList();
+private ObservableList<Course> courseList = FXCollections.observableArrayList();
     private CourseDAO courseDAO = new CourseDAO() {
 
     };
-
-    @FXML
-    private void addCourse() {
+@FXML private void addCourse() {
         // Retrieve input values
         String title = courseTitle.getText().trim();
         String description = courseDescription.getText().trim();
@@ -560,23 +526,23 @@ public class HelloController {
         courseActionMessage.setText("Course removed successfully!");
     }
     @FXML private void updateCourse() {
-            Course selectedCourse = (Course) courseTable.getSelectionModel().getSelectedItem();
-            if (selectedCourse == null) {
-                showAlert(Alert.AlertType.WARNING, "Selection Error", "No course selected!");
-                return;
-            }
-
-            String newTitle = selectedCourse.getCourseName();
-            String newDescription = selectedCourse.getDescription();
-
-            if (newTitle.isEmpty() || newDescription.isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled!");
-                return;
-            }
-
-            courseDAO.update(selectedCourse);
-            courseActionMessage.setText("Course updated successfully!");
+        Course selectedCourse = (Course) courseTable.getSelectionModel().getSelectedItem();
+        if (selectedCourse == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "No course selected!");
+            return;
         }
+
+        String newTitle = selectedCourse.getCourseName();
+        String newDescription = selectedCourse.getDescription();
+
+        if (newTitle.isEmpty() || newDescription.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "All fields must be filled!");
+            return;
+        }
+
+        courseDAO.update(selectedCourse);
+        courseActionMessage.setText("Course updated successfully!");
+    }
 
     private void loadCourses() {
         courseList.clear();
@@ -611,8 +577,7 @@ public class HelloController {
             }
         });
     }
-    @FXML
-    private void handleCourseShowNumOfStud() {
+    @FXML private void handleCourseShowNumOfStud() {
         // Fetch all courses and student counts
         List<Course> courses = courseDAO.findAll();
         Map<String, Integer> studentCounts = courseDAO.getStudentCountByCourse();
@@ -633,9 +598,7 @@ public class HelloController {
                 ))
         );
     }
-
-    @FXML
-    private void handleCourseShowAll() {
+    @FXML private void handleCourseShowAll() {
         try {
             // Retrieve all courses from the DAO
             List<Course> courses = courseDAO.findAll();
@@ -659,58 +622,85 @@ public class HelloController {
     }
 
     private void clearCourseFields () {
-            courseTitle.clear();
-            courseDescription.clear();
-            chooseInstructorForCourse.setValue(null);
-        }
+        courseTitle.clear();
+        courseDescription.clear();
+        chooseInstructorForCourse.setValue(null);
+    }
     private void setupEnrollmentChoiceBoxes() {
-        // Populate student ChoiceBox
+        // Populate student ChoiceBox for enrollment
         List<Student> students = studentDAO.findAll();
+        enrollStudent.getItems().clear();
         enrollStudent.getItems().addAll(students);
         enrollStudent.setConverter(new StringConverter<Student>() {
             @Override
             public String toString(Student student) {
-                return student != null ?
-                        student.getStudentName() + " (ID: " + student.getStudentId() + ")" : "";
+                return student != null ? student.getStudentName() + " (ID: " + student.getStudentId() + ")" : "";
             }
 
             @Override
             public Student fromString(String string) {
-                return null;
+                return null; // Not used
             }
         });
 
-        // Populate course ChoiceBox
+        // Populate course ChoiceBox for enrollment
         List<Course> courses = courseDAO.findAll();
+        enrollCourse.getItems().clear();
         enrollCourse.getItems().addAll(courses);
         enrollCourse.setConverter(new StringConverter<Course>() {
             @Override
             public String toString(Course course) {
-                return course != null ?
-                        course.getCourseName() + " (ID: " + course.getCourseId() + ")" : "";
+                return course != null ? course.getCourseName() + " (ID: " + course.getCourseId() + ")" : "";
             }
 
             @Override
             public Course fromString(String string) {
-                return null;
+                return null; // Not used
             }
         });
 
+        // Populate student filter ChoiceBox
+        enrollStudentFilter.getItems().clear();
+        enrollStudentFilter.getItems().addAll(students);
+        enrollStudentFilter.setConverter(new StringConverter<Student>() {
+            @Override
+            public String toString(Student student) {
+                return student != null ? student.getStudentName() : "";
+            }
 
+            @Override
+            public Student fromString(String string) {
+                return null; // Not used
+            }
+        });
 
-        // Semester and Year filter ChoiceBoxes
-        enrollSemesterFilter.getItems().addAll("Spring", "Summer", "Fall");
+        // Populate course filter ChoiceBox
+        enrollCourseFilter.getItems().clear();
+        enrollCourseFilter.getItems().addAll(courses);
+        enrollCourseFilter.setConverter(new StringConverter<Course>() {
+            @Override
+            public String toString(Course course) {
+                return course != null ? course.getCourseName() : "";
+            }
 
-        // Populate years (current year and past few years)
-        int currentYear = LocalDate.now().getYear();
-        for (int year = currentYear; year >= currentYear - 5; year--) {
-            enrollYearFilter.getItems().add(year);
-        }
+            @Override
+            public Course fromString(String string) {
+                return null; // Not used
+            }
+        });
+
+        // Populate semester filter ChoiceBox based on existing enrollments
+        List<String> semesters = enrollmentDAO.findDistinctSemesters();
+        enrollSemesterFilter.getItems().clear();
+        enrollSemesterFilter.getItems().addAll(semesters);
+
+        // Populate year filter ChoiceBox based on existing enrollments
+        List<Integer> years = enrollmentDAO.findDistinctYears();
+        enrollYearFilter.getItems().clear();
+        enrollYearFilter.getItems().addAll(years);
     }
 
-
-    @FXML
-    private void handleCourseLowStudentAction() {
+    @FXML private void handleCourseLowStudentAction() {
         try {
             int maxStudents = 5; // For example, courses with fewer than 5 students
 
@@ -739,8 +729,7 @@ public class HelloController {
             e.printStackTrace();
         }
     }
-    @FXML
-    private void showAverageStudents() {
+    @FXML private void showAverageStudents() {
         int avgStudents = courseDAO.getAverageStudentsPerCourse();
 
         // Update the label with the result
@@ -767,8 +756,7 @@ public class HelloController {
         enrollTable.refresh();
 
     }
-    @FXML
-    private void addEnrollment() {
+    @FXML private void addEnrollment() {
         Student selectedStudent = enrollStudent.getValue();
         Course selectedCourse = enrollCourse.getValue();
 
@@ -794,9 +782,7 @@ public class HelloController {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to add enrollment!");
         }
     }
-
-    @FXML
-    private void removeEnrollment() {
+    @FXML private void removeEnrollment() {
         Enrollment selectedEnrollment = enrollTable.getSelectionModel().getSelectedItem();
         if (selectedEnrollment == null) {
             showAlert(Alert.AlertType.WARNING, "Selection Error", "No enrollment selected!");
@@ -807,89 +793,25 @@ public class HelloController {
         enrollmentList.remove(selectedEnrollment);
         enrollActionMessage.setText("Enrollment removed successfully!");
     }
-
-
-    private void populateFilterChoiceBoxes() {
-        // Populate Student Filter with Distinct Students and "All" option
-        Set<Student> uniqueStudents = enrollmentList.stream()
-                .map(Enrollment::getStudent)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        enrollStudent.getItems().clear();
-        enrollStudent.getItems().add(null); // "All" option
-        enrollStudent.getItems().addAll(uniqueStudents);
-
-        // Populate Course Filter with Distinct Courses and "All" option
-        Set<Course> uniqueCourses = enrollmentList.stream()
-                .map(Enrollment::getCourse)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        enrollCourse.getItems().clear();
-        enrollCourse.getItems().add(null); // "All" option
-        enrollCourse.getItems().addAll(uniqueCourses);
-
-        // Populate Semester Filter with Distinct Semesters and "All" option
-        Set<String> uniqueSemesters = enrollmentList.stream()
-                .map(Enrollment::getSemester)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        enrollSemesterFilter.getItems().clear();
-        enrollSemesterFilter.getItems().add(null); // "All" option
-        enrollSemesterFilter.getItems().addAll(uniqueSemesters);
-
-        // Populate Year Filter with Distinct Years and "All" option
-        Set<Integer> uniqueYears = enrollmentList.stream()
-                .map(Enrollment::getYear)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        enrollYearFilter.getItems().clear();
-        enrollYearFilter.getItems().add(null); // "All" option
-        enrollYearFilter.getItems().addAll(uniqueYears);
-
-        // Add listeners to trigger filtering on selection
-        enrollStudent.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
-        enrollCourse.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
-        enrollSemesterFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
-        enrollYearFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+    @FXML private void updateEnrollment(ActionEvent event) {
+        Enrollment selectedEnrollment = enrollTable.getSelectionModel().getSelectedItem();
+        if (selectedEnrollment == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "No enrollment selected!");
+            return;
+        }
+        try {
+            enrollmentDAO.update(selectedEnrollment);
+            enrollActionMessage.setText("Enrollment updated successfully!");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Update Error", "Failed to update enrollment!");
+        }
     }
-
-    @FXML
-    private void filterEnrollments() {
-        // Get filter values (null represents "All" option)
-        Student filteredStudent = enrollStudent.getValue();
-        Course filteredCourse = enrollCourse.getValue();
-        String filteredSemester = enrollSemesterFilter.getValue();
-        Integer filteredYear = enrollYearFilter.getValue();
-
-        // Retrieve filtered list from DAO
-        List<Enrollment> filteredList = enrollmentDAO.findFilteredEnrollments(
-                filteredStudent, filteredCourse, filteredSemester, filteredYear
-        );
-
-        // Update table view
-        enrollmentList.setAll(filteredList);
-    }
-
-
-
-    private void loadEnrollments() {
+private void loadEnrollments() {
         enrollmentList.clear();
         enrollmentList.addAll(enrollmentDAO.findAll());
         enrollTable.setItems(enrollmentList);
-
-        // Populate filter choice boxes after loading enrollments
         populateFilterChoiceBoxes();
     }
-
-    // Add reset filter method
-    @FXML
-    private void resetEnrollmentFilter() {
-        // Clear all filter choice boxes
-        enrollStudent.setValue(null);
-        enrollCourse.setValue(null);
-        enrollSemesterFilter.setValue(null);
-        enrollYearFilter.setValue(null);
-
-        // Reload all enrollments
-        loadEnrollments();
-    }
-
 
     private void clearEnrollmentFields() {
         enrollStudent.setValue(null);
@@ -902,8 +824,69 @@ public class HelloController {
         if (month >= 6 && month <= 8) return "Summer";
         return "Fall";
     }
+    private void populateFilterChoiceBoxes() {
+        // Populate Student Filter with Distinct Students and "All" option
+        Set<Student> uniqueStudents = enrollmentList.stream()
+                .map(Enrollment::getStudent)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollStudentFilter.getItems().clear();
+        enrollStudentFilter.getItems().add(null); // "All" option
+        enrollStudentFilter.getItems().addAll(uniqueStudents);
+        // Populate Course Filter with Distinct Courses and "All" option
+        Set<Course> uniqueCourses = enrollmentList.stream()
+                .map(Enrollment::getCourse)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollCourseFilter.getItems().clear();
+        enrollCourseFilter.getItems().add(null); // "All" option
+        enrollCourseFilter.getItems().addAll(uniqueCourses);
+        // Populate Semester Filter with Distinct Semesters and "All" option
+        Set<String> uniqueSemesters = enrollmentList.stream()
+                .map(Enrollment::getSemester)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollSemesterFilter.getItems().clear();
+        enrollSemesterFilter.getItems().add(null); // "All" option
+        enrollSemesterFilter.getItems().addAll(uniqueSemesters);
+        // Populate Year Filter with Distinct Years and "All" option
+        Set<Integer> uniqueYears = enrollmentList.stream()
+                .map(Enrollment::getYear)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        enrollYearFilter.getItems().clear();
+        enrollYearFilter.getItems().add(null); // "All" option
+        enrollYearFilter.getItems().addAll(uniqueYears);
+        // Add listeners to trigger filtering on selection
+        enrollStudentFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+        enrollCourseFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+        enrollSemesterFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+        enrollYearFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterEnrollments());
+    }
+    @FXML
+    private void filterEnrollments() {
+        // Get filter values
+        // Get filter values (null represents "All" option)
+        Student filteredStudent = enrollStudentFilter.getValue();
+        Course filteredCourse = enrollCourseFilter.getValue();
+        String filteredSemester = enrollSemesterFilter.getValue();
+        Integer filteredYear = enrollYearFilter.getValue();
 
+        // Retrieve filtered list from DAO
+        List<Enrollment> filteredList = enrollmentDAO.findFilteredEnrollments(
+                filteredStudent, filteredCourse, filteredSemester, filteredYear
+        );
 
+        // Update table view
+        enrollmentList.setAll(filteredList);
+    }
+    @FXML
+    private void resetEnrollmentFilter() {
+        // Clear all filter choice boxes
+        enrollStudentFilter.setValue(null);
+        enrollCourseFilter.setValue(null);
+        enrollSemesterFilter.setValue(null);
+        enrollYearFilter.setValue(null);
+        // Reload all enrollments
+        loadEnrollments();
     }
 
+
+}
 

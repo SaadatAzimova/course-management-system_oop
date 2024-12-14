@@ -176,8 +176,8 @@
                         <ChoiceBox fx:id="enrollSemesterFilter" layoutX="652.0" layoutY="14.0" onDragDetected="#filterEnrollments" prefHeight="11.0" prefWidth="81.0" />
                         <ChoiceBox fx:id="enrollYearFilter" layoutX="558.0" layoutY="14.0" onDragDetected="#filterEnrollments" prefHeight="26.0" prefWidth="81.0" />
                         <Button layoutX="20.0" layoutY="15.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
-                        <ChoiceBox fx:id="enrollStudent" layoutX="338.0" layoutY="17.0" onDragDetected="#filterEnrollments" prefHeight="26.0" prefWidth="90.0" />
-                        <ChoiceBox fx:id="enrollCourse" layoutX="447.0" layoutY="14.0" onDragDetected="#filterEnrollments" prefHeight="26.0" prefWidth="92.0" />
+                        <ChoiceBox fx:id="enrollStudentFilter" layoutX="338.0" layoutY="17.0" onDragDetected="#filterEnrollments" prefHeight="26.0" prefWidth="90.0" />
+                        <ChoiceBox fx:id="enrollCourseFilter" layoutX="447.0" layoutY="14.0" onDragDetected="#filterEnrollments" prefHeight="26.0" prefWidth="92.0" />
                         <Button fx:id="enrollReset" layoutX="299.0" layoutY="467.0" mnemonicParsing="false" onAction="#resetEnrollmentFilter" prefHeight="39.0" prefWidth="123.0" style="-fx-background-color: #6366F1;" text="Reset filter" />
                      </children>
                   </AnchorPane>
@@ -215,7 +215,6 @@
                            <font>
                               <Font size="18.0" />
                            </font></Label>
-                        <ChoiceBox fx:id="courseShow" layoutX="57.0" layoutY="351.0" prefWidth="150.0" />
                         <Button layoutX="20.0" layoutY="15.0" mnemonicParsing="false" onAction="#navigateToMainTab" text="Back" />
                         <Button fx:id="courseShownumOfstud" layoutX="777.0" layoutY="398.0" mnemonicParsing="false" onAction="#handleCourseShowNumOfStud" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #6366F1;" text="Show num of students" />
                         <Button fx:id="courseLowStudent" layoutX="285.0" layoutY="454.0" mnemonicParsing="false" onAction="#handleCourseLowStudentAction" prefHeight="39.0" prefWidth="225.0" style="-fx-background-color: #6366F1;" text="Show courses with low enrollment " />

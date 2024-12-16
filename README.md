@@ -104,7 +104,8 @@ The Student Course Management System (SCMS) is a JavaFX-based application design
 - PostgreSQL database integration for reliable data storage.
 - GUI built using JavaFX Scene Builder for enhanced usability.
 - Modular MVC architecture ensuring maintainable and testable code.
-- 
+
+##gui screenshots  
 ![Снимок](https://github.com/user-attachments/assets/5cc2c609-9f60-4fa2-80c4-3e2939e975bb)
 
 ![Снимок1](https://github.com/user-attachments/assets/f8554912-fb9d-4b2c-bced-7ea7c86129ae)
@@ -115,5 +116,14 @@ The Student Course Management System (SCMS) is a JavaFX-based application design
 
 ![Снимок4](https://github.com/user-attachments/assets/39179dc2-2a07-4697-9156-40a82503b63f)
 
-
+##uml diagram
 ![diagram](https://github.com/user-attachments/assets/40434876-8544-48eb-a356-9047e26497e9)
+
+##journey with dates
+https://docs.google.com/document/d/1zdLmooHgadV2ThfWElvCIV2rFF_70CKpjntoGp9Xi9Q/edit?usp=sharing
+
+##presentation
+https://www.canva.com/design/DAGZcfZ1eng/JFvwhThQza1VH1rPuSVsLw/edit?utm_content=DAGZcfZ1eng&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+
+

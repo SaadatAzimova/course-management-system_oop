@@ -114,3 +114,6 @@ The Student Course Management System (SCMS) is a JavaFX-based application design
 ![Снимок3](https://github.com/user-attachments/assets/9c2c8ffc-94db-4def-b03d-29f5e1f4d271)
 
 ![Снимок4](https://github.com/user-attachments/assets/39179dc2-2a07-4697-9156-40a82503b63f)
+
+
+![diagram](https://github.com/user-attachments/assets/40434876-8544-48eb-a356-9047e26497e9)
